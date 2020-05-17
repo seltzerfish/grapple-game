@@ -63,7 +63,7 @@ class Player {
      * See https://en.wikipedia.org/wiki/Vector_projection for more.
      */
     getVelocityProjectionOntoGrapple() {
-
+        return (this.xVelocity * this.x + this.yVelocity * this.y) / this.getGrappleLength();
     }
 
 }
