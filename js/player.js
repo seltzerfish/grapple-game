@@ -63,7 +63,9 @@ class Player {
      * See https://en.wikipedia.org/wiki/Vector_projection for more.
      */
     getVelocityProjectionOntoGrapple() {
-        return (this.xVelocity * this.x + this.yVelocity * this.y) / this.getGrappleLength();
+        const grappleXVector = this.x - this.grappledX;
+        const grappleYVector = this.y - this.grappledY;
+        const dot_product = (this.xVelocity * grappleXVector) + (this.yVelocity * grappleYVector);
+        return dot_product / this.getGrappleLength();
     }
-
 }
