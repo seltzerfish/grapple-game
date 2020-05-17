@@ -6,17 +6,28 @@
 class Player {
     constructor() {
         this.spriteName = "";
-        this.width = 30;
-        this.height = 30;
+        this.width = 25;
+        this.height = 25;
         this.x = 300;
         this.y = 0;
         this.xVelocity = 0;
         this.yVelocity = 0;
+        this.topSpeed = 0;
         this.xAcceleration = 0;
         this.yAcceleration = 0;
         this.isGrappled = false;
         this.grappledX = 0;
         this.grappledY = 0
+    }
+
+    grapple(x, y) {
+        this.isGrappled = true;
+        this.grappledX = x;
+        this.grappledY = y;
+    }
+
+    ungrapple() {
+        this.isGrappled = false;
     }
 
     getCenterX() {
@@ -45,6 +56,14 @@ class Player {
 
     getGrappleLength() {
         return Math.sqrt(Math.pow(this.grappledX - this.x, 2) + Math.pow(this.grappledY - this.y, 2));
+    }
+
+    /**
+     * Used for measuring how quickly the player is moving away from the grapple point
+     * See https://en.wikipedia.org/wiki/Vector_projection for more.
+     */
+    getVelocityProjectionOntoGrapple() {
+
     }
 
 }

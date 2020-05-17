@@ -7,33 +7,34 @@ var gameStateUpdated = false;
 var renderFunction = null;
 var canvas;
 var ctx;
-var controller;
-var player;
-var world;
-var renderer;
+var game;
+
+class Game {
+  constructor() {
+    this.player = new Player();
+    this.controller = new Controller();
+    this.world = new World(this.player, this.controller);
+    this.renderer = new Renderer(this.world);
+    window.addEventListener("mousedown", (event) => this.controller.keyListener(event));
+    window.addEventListener("mouseup", (event) => this.controller.keyListener(event));
+  }
+}
 
 window.onload = function init() {
-    canvas = document.getElementById('canvas');
-    ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth - 20;
-    canvas.height = window.innerHeight - 40;
-    player = new Player();
-    controller = new Controller(player);
-    world = new World(player);
-    renderer = new Renderer(world);
-    window.addEventListener("keydown", controller.keyListener);
-    window.addEventListener("keyup", controller.keyListener);
-    window.addEventListener("mousedown", controller.keyListener);
-    window.addEventListener("mouseup", controller.keyListener);
-    window.requestAnimationFrame(loop);
+  canvas = document.getElementById('canvas');
+  ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth - 20;
+  canvas.height = window.innerHeight - 40;
+  game = new Game();
+  window.requestAnimationFrame(loop);
+
 }
 
 function loop() {
-  world.update();
-  renderer.render(ctx);
-  requestAnimationFrame(loop);
+  game.world.update();
+  game.renderer.render(ctx);
+  window.requestAnimationFrame(loop);
 }
-
 
 
 

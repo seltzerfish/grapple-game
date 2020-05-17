@@ -3,23 +3,24 @@
  */
 class Controller {
 
-    constructor(player) {
+    constructor() {
         this.mouseDown = false;
-        this.clickX = 0;
-        this.clickY = 0;
-        this.player = player;
+        this.mouseDownX = 0;
+        this.mouseDownY = 0;
     }
 
     keyListener = function (event) {
         if (event.type == "mousedown") {
-            this.player.isGrappled = true;
-            this.player.grappledX = event.offsetX;
-            this.player.grappledY = event.offsetY;
+            this.mouseDown = true;
+            this.mouseDownX = event.offsetX;
+            this.mouseDownY = event.offsetY;
         }
         else if (event.type == "mouseup") {
-            this.player.isGrappled = false;
+            this.mouseDown = false;
+            this.mouseDownX = 0;
+            this.mouseDownY = 0;
         }
-        else {}
+        else { }
     }
 
 }
