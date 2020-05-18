@@ -1,15 +1,47 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <canvas id="canvas"></canvas>
-        <img src="static/images/hot-anime-girl.png" id="sprite" style="display: none;">
-        <script src="js/player.js"></script>
-        <script src="js/controller.js"></script>
-        <script src="js/world3.js"></script>
-        <script src="js/renderer.js"></script>
-        <script src="js/main.js"></script>
-    </body>
+
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <img src="static/images/hot-anime-girl.png" id="sprite" style="display: none;">
+    <!-- TODO: make the manual parameter adjustment inputs below less hacky -->
+    <div style="font-size: large;">
+        gravity:
+        <input type="number" id="gravity" name="gravity" step="0.1" onchange="updateGravity()">
+        bounce factor:
+        <input type="number" id="bounce" name="bounce" step="0.1" onchange="updateBounce()">
+        grapple strength X:
+        <input type="number" id="grapStrengthX" name="grapStrengthX" step="0.1" onchange="updateGrapStrengthX()">
+        grapple strength Y:
+        <input type="number" id="grapStrengthY" name="grapStrengthY" step="0.1" onchange="updateGrapStrengthY()">
+    </div>
+    <div style="font-size: large;">
+        acceleration cap:
+        <input type="number" id="maxAcc" name="maxAcc" step="0.1" onchange="updateMaxAcc()">
+        ground friction:
+        <input type="number" id="friction" name="friction" step="0.1" onchange="updateFriction()">
+        <span style="display: none;" id="extraPullStrengthSpan">
+            extra pull strength:
+            <input type="number" id="extraPullStrength" name="extraPullStrength" step="0.1" onchange="updateExtraPullStrength()">
+        </span>
+        <span style="display: none;" id="inversePullXSpan">
+            inverse acc. strength X:
+            <input type="number" id="inversePullX" name="inversePullX" step="10" onchange="updateInversePullX()">
+        </span>
+        <span style="display: none;"  id="inversePullYSpan">
+            inverse acc. strength Y:
+            <input type="number" id="inversePullY" name="inversePullY" step="10" onchange="updateInversePullY()">
+        </span>
+    </div>
+    <script src="js/player.js"></script>
+    <script src="js/controller.js"></script>
+    <script src="js/world.js"></script>
+    <script src="js/renderer.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
 </html>

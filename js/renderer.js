@@ -3,6 +3,7 @@ const DEBUG = true;
 class Renderer {
     constructor(world) {
         this.world = world;
+        this.accelerationGraph = [];
     }
 
     render(ctx) {
@@ -53,15 +54,31 @@ class Renderer {
         const dist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
         const red = 255 * (dist / r);
         const green = 255 - (255 * (dist / r));
-        ctx.strokeStyle = 'rgb(' + red + ", " + green + ", 0)"; 
+        ctx.strokeStyle = 'rgb(' + red + ", " + green + ", 0)";
+        this.accelerationGraph.push([dist, ctx.strokeStyle]); 
         ctx.lineTo(100 + x, 150 + y);
-        ctx.lineWidth = 5;
+        ctx.lineWidth = 7;
         ctx.stroke();
 
+        if (this.accelerationGraph.length > 160) {
+            this.accelerationGraph.shift();
+        }
+        ctx.lineWidth = 2;
+        
+        let startX = 30;
+        let startY = 390;
+        for (let i = 0; i < this.accelerationGraph.length; i++) {
+            let entry = this.accelerationGraph[i];
+            ctx.beginPath();
+            ctx.moveTo(startX + i, startY);
+            ctx.strokeStyle = entry[1];
+            ctx.lineTo(startX + i, startY - (entry[0] * 1.5));
+            ctx.stroke();
+        }
 
         ctx.lineWidth = 1;
         ctx.strokeStyle =  "black";
-
+        ctx.fillText("Acceleration", 30, 260);
 
 
     }

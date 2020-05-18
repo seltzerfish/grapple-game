@@ -14,6 +14,7 @@ class Game {
     this.player = new Player();
     this.controller = new Controller();
     this.world = new World(this.player, this.controller);
+    this.world.setDefaultValues();
     this.renderer = new Renderer(this.world);
     window.addEventListener("mousedown", (event) => this.controller.keyListener(event));
     window.addEventListener("mouseup", (event) => this.controller.keyListener(event));
@@ -23,8 +24,8 @@ class Game {
 window.onload = function init() {
   canvas = document.getElementById('canvas');
   ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth - 20;
-  canvas.height = window.innerHeight - 40;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight - 100;
   game = new Game();
   window.requestAnimationFrame(loop);
 

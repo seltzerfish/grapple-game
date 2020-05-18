@@ -62,8 +62,9 @@ class Player {
      * Used for measuring how quickly the player is moving away from the grapple point
      * See https://en.wikipedia.org/wiki/Vector_projection for more.
      */
-    getVelocityProjectionOntoGrapple() {
-
-    }
+    getVelocityProjectionOntoGrappleMagnitude() {
+        const vDotG = (this.xVelocity * (this.grappledX - this.x)) + (this.yVelocity * (this.grappledY - this.y));
+        return vDotG / Math.max(this.getGrappleLength(), 1);
+    }   
 
 }
