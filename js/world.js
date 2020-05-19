@@ -1,30 +1,32 @@
 
-let GRAPPLE_STRENGTH_X = 0.8;
-let GRAPPLE_STRENGTH_Y = 0.8;
-let GRAVITY = 0.25
+// TODO: change these values back to const upon game release
+let GRAPPLE_STRENGTH_X = 0.5;
+let GRAPPLE_STRENGTH_Y = 0.5;
+let GRAVITY = 0.2;
 let BOUNCE_FACTOR = -0.2;
 let ACCELERATION_CAP = 2;
 let FRICTION = 0.2;
+let EXTRA_PULL_STRENGTH = 0.16;
 
-EXTRA_PULL_STRENGTH = 0.16;
-
-// CONSTANT ACCELERATION
 class World {
-    constructor(player, controller) {
+    constructor(player, controller, camera) {
         this.player = player;
         this.controller = controller;
-        this.title = "pull harder when moving away from grappled point";
+        this.camera = camera;
+        this.level = LEVEL_1;
     }
 
     update() {
         this.handleControllerInput();
         this.handlePlayerMotion();
         this.detectCollisions();
+        this.camera.updatePosition();
     }
 
     handleControllerInput() {
         if (!this.player.isGrappled && this.controller.mouseDown) {
-            this.player.grapple(this.controller.mouseDownX, this.controller.mouseDownY);
+            this.player.grapple(this.camera.translateInputX(this.controller.mouseDownX), 
+            this.camera.translateInputY(this.controller.mouseDownY));
         }
         else if (this.player.isGrappled && !this.controller.mouseDown) {
             this.player.ungrapple();
@@ -38,8 +40,12 @@ class World {
         if (this.player.isGrappled) {
             this.handleGrappleMotion();
         }
+        else {
+            // This shouldn't be here. this should be in the player class, but i dont feel like implementing a method for that rn
+            this.player.rotation = this.player.getVelocityRadians()+ 1.5708;
+        }
         this.player.yAcceleration += GRAVITY;
-        this.capPlayerAcceleration();
+        this.capPlayerAcceleration(); // this should probably also be a method of the player class
         this.player.xVelocity += this.player.xAcceleration;
         this.player.yVelocity += this.player.yAcceleration;
 
@@ -61,10 +67,10 @@ class World {
         if (projection < 0) {
             // player is moving away from grapple
             projection *= -1 * EXTRA_PULL_STRENGTH;
-            this.player.xAcceleration *= 1 +projection;
+            this.player.xAcceleration *= 1 + projection;
             this.player.yAcceleration *= 1 + projection;
         }
-
+        this.player.rotation = this.player.getAccelerationRadians() + 1.5708;
     }
 
     capPlayerAcceleration() {
@@ -77,24 +83,28 @@ class World {
     }
 
     detectCollisions() {
-        // wall / floor collision
-        if (this.player.x < 0 ) {
-            this.player.xVelocity *= BOUNCE_FACTOR;
-            this.player.x = 0;
-        }
-        if ((this.player.x + this.player.width) > canvas.width) {
-            this.player.xVelocity *= BOUNCE_FACTOR;
-            this.player.x = canvas.width - this.player.width;
-        }
-        if (this.player.y < 0 ) {
-            this.player.yVelocity *= BOUNCE_FACTOR;
-            this.player.y = 0;
-        }
+        // Turning off wall  and ceiling boundaries for now, but keeping floor.
+
+
+        // if (this.player.x < 0) {
+        //     this.player.xVelocity *= BOUNCE_FACTOR;
+        //     this.player.x = 0;
+        // }
+        // if ((this.player.x + this.player.width) > canvas.width) {
+        //     this.player.xVelocity *= BOUNCE_FACTOR;
+        //     this.player.x = canvas.width - this.player.width;
+        // }
+        // if (this.player.y < 0) {
+        //     this.player.yVelocity *= BOUNCE_FACTOR;
+        //     this.player.y = 0;
+        // }
         if ((this.player.y + this.player.height) > canvas.height) {
             this.player.yVelocity *= BOUNCE_FACTOR;
             this.player.y = canvas.height - this.player.height;
         }
     }
+
+    // TODO: move this to renderer
     setDefaultValues() {
         document.getElementById("gravity").value = GRAVITY;
         document.getElementById("bounce").value = BOUNCE_FACTOR;
@@ -107,6 +117,8 @@ class World {
     }
 }
 
+
+// TODO: move these somewhere else. possibly renderer
 function updateGravity() {
     GRAVITY = parseFloat(document.getElementById("gravity").value);
 }

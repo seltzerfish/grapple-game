@@ -7,7 +7,9 @@
 
 <body>
     <canvas id="canvas"></canvas>
-    <img src="static/images/hot-anime-girl.png" id="sprite" style="display: none;">
+    <img src="static/images/rock.png" id="rock" style="display: none;">
+    <img src="static/images/boi.png" id="playerSprite" style="display: none;">
+    <img src="static/images/grappledBoi.png" id="playerSpriteGrappled" style="display: none;">
     <!-- TODO: make the manual parameter adjustment inputs below less hacky -->
     <div style="font-size: large;">
         gravity:
@@ -37,7 +39,10 @@
             <input type="number" id="inversePullY" name="inversePullY" step="10" onchange="updateInversePullY()">
         </span>
     </div>
+    <script src="js/sprite.js"></script>
     <script src="js/player.js"></script>
+    <script src="js/levels/level1.js"></script>
+    <script src="js/camera.js"></script>
     <script src="js/controller.js"></script>
     <script src="js/world.js"></script>
     <script src="js/renderer.js"></script>

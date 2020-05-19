@@ -13,9 +13,10 @@ class Game {
   constructor() {
     this.player = new Player();
     this.controller = new Controller();
-    this.world = new World(this.player, this.controller);
+    this.camera = new Camera(this.player);
+    this.world = new World(this.player, this.controller, this.camera);
     this.world.setDefaultValues();
-    this.renderer = new Renderer(this.world);
+    this.renderer = new Renderer(this.world, ctx, this.camera);
     window.addEventListener("mousedown", (event) => this.controller.keyListener(event));
     window.addEventListener("mouseup", (event) => this.controller.keyListener(event));
   }

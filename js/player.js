@@ -3,55 +3,27 @@
  * 
  * Contains relevant instance variables and convenience methods.
  */
-class Player {
+class Player extends MovingSprite {
+
     constructor() {
-        this.spriteName = "";
-        this.width = 25;
-        this.height = 25;
-        this.x = 300;
-        this.y = 0;
-        this.xVelocity = 0;
-        this.yVelocity = 0;
-        this.topSpeed = 0;
-        this.xAcceleration = 0;
-        this.yAcceleration = 0;
+        super(0, 300, 30, 40, "playerSprite");
         this.isGrappled = false;
         this.grappledX = 0;
-        this.grappledY = 0
+        this.grappledY = 0;
     }
 
     grapple(x, y) {
+        this.srcImage = "playerSpriteGrappled";
         this.isGrappled = true;
         this.grappledX = x;
         this.grappledY = y;
+        this.rotation = this.getAccelerationRadians() + 1.5708;
     }
 
     ungrapple() {
+        this.srcImage = "playerSprite";
         this.isGrappled = false;
-    }
-
-    getCenterX() {
-        return this.x + (this.width / 2)
-    }
-
-    getCenterY() {
-        return this.y + (this.height / 2)
-    }
-
-    getAccelerationMagnitude() {
-        return Math.sqrt(Math.pow(this.xAcceleration, 2) + Math.pow(this.yAcceleration, 2));
-    }
-
-    getAccelerationRadians() {
-        Math.atan2(this.yAcceleration, this.xAcceleration);
-    }
-
-    getVelocity() {
-        return Math.sqrt(Math.pow(this.xVelocity, 2) + Math.pow(this.yVelocity, 2));
-    }
-
-    getVelocityRadians() {
-        return Math.atan2(this.yVelocity, this.xVelocity);
+        this.rotation = this.getVelocityRadians() + 1.5708;
     }
 
     getGrappleLength() {
