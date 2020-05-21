@@ -1,13 +1,22 @@
 class Sprite {
     
-    constructor(x=0, y=0, width=50, height=50, srcImage="", isPassable=false, rotation=0) {
+    constructor(x=0, y=0, width=50, height=50, srcImage='', rotation=0, bounceCoefficient=0.25, frictionCoefficient=0.15) {
+        if (this.constructor === Sprite) {
+            throw new Error('Sprite class is Abstract. Use Actor or Solid instead.')
+        }
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.srcImage = srcImage;
-        this.isPassable = false;
         this.rotation = rotation;
+        this.bounceCoefficient = bounceCoefficient;
+        this.frictionCoefficient = frictionCoefficient;
+        this.hitboxes = [new Hitbox(this, 0, 0, width, height)]; // default hitbox is the sprite image boundary
+
+        // Used for handling collisions. represents the minimum vector needed to remove this sprite from another.
+        this.minTranslationX = 0;
+        this.minTranslationY = 0;
     }
 
     getCenterX() {
@@ -17,32 +26,27 @@ class Sprite {
     getCenterY() {
         return this.y + (this.height / 2)
     }
-}
 
-class MovingSprite extends Sprite {
-
-    constructor(x, y, width, height, srcImage, isPassable) {
-        super(x, y, width, height, srcImage, isPassable);
-        this.xVelocity = 0;
-        this.yVelocity = 0;
-        this.topSpeed = 0;
-        this.xAcceleration = 0;
-        this.yAcceleration = 0;
+    isCollidingWith(otherSprite) {
+        // TODO: make this method smarter so that it doesn't check all pairs of hitboxes
+        let thisHitbox;
+        let thatHitbox;
+        this.minTranslationX = 0;
+        this.minTranslationY = 0;
+        for (thisHitbox of this.hitboxes) {
+            for (thatHitbox of otherSprite.hitboxes) {
+                const mtv = thisHitbox.getMinimumTranslationVector(thatHitbox);
+                this.minTranslationX += mtv[0];
+                this.minTranslationY += mtv[1];
+            }
+        }
+        if (this.minTranslationX !==0 || this.minTranslationY !== 0) {
+            return true;
+        }
+        return false;
     }
 
-    getAccelerationMagnitude() {
-        return Math.sqrt(Math.pow(this.xAcceleration, 2) + Math.pow(this.yAcceleration, 2));
-    }
-
-    getAccelerationRadians() {
-        return Math.atan2(this.yAcceleration, this.xAcceleration);
-    }
-
-    getVelocity() {
-        return Math.sqrt(Math.pow(this.xVelocity, 2) + Math.pow(this.yVelocity, 2));
-    }
-
-    getVelocityRadians() {
-        return Math.atan2(this.yVelocity, this.xVelocity);
+    getTranslationVectorMagnitude() {
+        return Math.sqrt(Math.pow(this.minTranslationX, 2) + Math.pow(this.minTranslationY, 2));
     }
 }

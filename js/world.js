@@ -1,12 +1,10 @@
 
 // TODO: change these values back to const upon game release
-let GRAPPLE_STRENGTH_X = 0.5;
+let GRAPPLE_STRENGTH_X = 0.4;
 let GRAPPLE_STRENGTH_Y = 0.5;
 let GRAVITY = 0.2;
-let BOUNCE_FACTOR = -0.2;
-let ACCELERATION_CAP = 2;
-let FRICTION = 0.2;
-let EXTRA_PULL_STRENGTH = 0.16;
+let ACCELERATION_CAP = 1.5;
+let EXTRA_PULL_STRENGTH = 0.3;
 
 class World {
     constructor(player, controller, camera) {
@@ -14,12 +12,16 @@ class World {
         this.controller = controller;
         this.camera = camera;
         this.level = LEVEL_1;
+        this.player.x = this.level.playerStartX;
+        this.player.y = this.level.playerStartY;
+        this.collisionHandler = new CollisionHandler(this.level, this.player);
     }
 
     update() {
         this.handleControllerInput();
-        this.handlePlayerMotion();
-        this.detectCollisions();
+        this.updatePlayer();
+        this.collisionHandler.handleCollisions();
+        this.detectFallOutOfWorld();
         this.camera.updatePosition();
     }
 
@@ -33,7 +35,7 @@ class World {
         }
     }
 
-    handlePlayerMotion() {
+    updatePlayer() {
         this.player.xAcceleration = 0;
         this.player.yAcceleration = 0;
 
@@ -41,21 +43,12 @@ class World {
             this.handleGrappleMotion();
         }
         else {
-            // This shouldn't be here. this should be in the player class, but i dont feel like implementing a method for that rn
-            this.player.rotation = this.player.getVelocityRadians()+ 1.5708;
+            this.player.updateIdleSprite();
         }
         this.player.yAcceleration += GRAVITY;
         this.capPlayerAcceleration(); // this should probably also be a method of the player class
-        this.player.xVelocity += this.player.xAcceleration;
-        this.player.yVelocity += this.player.yAcceleration;
-
-        // friction
-        if (this.player.y === canvas.height - this.player.height && !this.player.isGrappled) {
-            this.player.xVelocity *= 1 - FRICTION;
-        }
-        // update position
-        this.player.x += this.player.xVelocity;
-        this.player.y += this.player.yVelocity;
+        this.player.updateVelocity();
+        this.player.updatePosition();  
     }
 
     handleGrappleMotion() {
@@ -82,36 +75,21 @@ class World {
         }
     }
 
-    detectCollisions() {
-        // Turning off wall  and ceiling boundaries for now, but keeping floor.
-
-
-        // if (this.player.x < 0) {
-        //     this.player.xVelocity *= BOUNCE_FACTOR;
-        //     this.player.x = 0;
-        // }
-        // if ((this.player.x + this.player.width) > canvas.width) {
-        //     this.player.xVelocity *= BOUNCE_FACTOR;
-        //     this.player.x = canvas.width - this.player.width;
-        // }
-        // if (this.player.y < 0) {
-        //     this.player.yVelocity *= BOUNCE_FACTOR;
-        //     this.player.y = 0;
-        // }
-        if ((this.player.y + this.player.height) > canvas.height) {
-            this.player.yVelocity *= BOUNCE_FACTOR;
-            this.player.y = canvas.height - this.player.height;
+    detectFallOutOfWorld() {
+        if ((this.player.y + this.player.height) > this.level.height) {
+            this.player.x = this.level.playerStartX;
+            this.player.y = this.level.playerStartY;
+            this.player.xVelocity = 0;
+            this.player.yVelocity = 0;
         }
     }
 
     // TODO: move this to renderer
     setDefaultValues() {
         document.getElementById("gravity").value = GRAVITY;
-        document.getElementById("bounce").value = BOUNCE_FACTOR;
         document.getElementById("grapStrengthX").value = GRAPPLE_STRENGTH_X;
-        document.getElementById("grapStrengthY").value = GRAPPLE_STRENGTH_X;
+        document.getElementById("grapStrengthY").value = GRAPPLE_STRENGTH_Y;
         document.getElementById("maxAcc").value = ACCELERATION_CAP;
-        document.getElementById("friction").value = FRICTION;
         document.getElementById("extraPullStrengthSpan").style.display = "inline";
         document.getElementById("extraPullStrength").value = EXTRA_PULL_STRENGTH;
     }
@@ -122,9 +100,6 @@ class World {
 function updateGravity() {
     GRAVITY = parseFloat(document.getElementById("gravity").value);
 }
-function updateBounce() {
-    BOUNCE_FACTOR = parseFloat(document.getElementById("bounce").value);
-}
 function updateGrapStrengthX() {
     GRAPPLE_STRENGTH_X = parseFloat(document.getElementById("grapStrengthX").value);
 }
@@ -133,9 +108,6 @@ function updateGrapStrengthY() {
 }
 function updateMaxAcc() {
     ACCELERATION_CAP = parseFloat(document.getElementById("maxAcc").value);
-}
-function updateFriction() {
-    FRICTION = parseFloat(document.getElementById("friction").value);
 }
 function updateExtraPullStrength() {
     EXTRA_PULL_STRENGTH = parseFloat(document.getElementById("extraPullStrength").value);

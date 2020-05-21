@@ -3,13 +3,16 @@
  * 
  * Contains relevant instance variables and convenience methods.
  */
-class Player extends MovingSprite {
+class Player extends Actor {
 
     constructor() {
         super(0, 300, 30, 40, "playerSprite");
         this.isGrappled = false;
         this.grappledX = 0;
         this.grappledY = 0;
+        this.animationFrameDuration = 20;
+        this.animationFrames = ['playerSprite', 'idle']
+        this.bounceCoefficient = 1;
     }
 
     grapple(x, y) {
@@ -23,7 +26,6 @@ class Player extends MovingSprite {
     ungrapple() {
         this.srcImage = "playerSprite";
         this.isGrappled = false;
-        this.rotation = this.getVelocityRadians() + 1.5708;
     }
 
     getGrappleLength() {
@@ -38,5 +40,14 @@ class Player extends MovingSprite {
         const vDotG = (this.xVelocity * (this.grappledX - this.x)) + (this.yVelocity * (this.grappledY - this.y));
         return vDotG / Math.max(this.getGrappleLength(), 1);
     }   
+
+    updateIdleSprite() {
+        // this.rotation = this.getVelocityRadians()+ 1.5708;
+        // this.rotation = this.getVelocityRadians()+ 1.5708;
+        if (Math.round(this.getVelocity()) === 0) {
+            this.rotation *= 0.8;
+            this.animate();
+        }
+    }
 
 }

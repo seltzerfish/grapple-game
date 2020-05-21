@@ -10,6 +10,9 @@
     <img src="static/images/rock.png" id="rock" style="display: none;">
     <img src="static/images/boi.png" id="playerSprite" style="display: none;">
     <img src="static/images/grappledBoi.png" id="playerSpriteGrappled" style="display: none;">
+    <img src="static/images/idle.png" id="idle" style="display: none;">
+    <img src="static/images/claw.png" id="claw" style="display: none;">
+    <img src="static/images/dog.png" id="dog" style="display: none;">
     <!-- TODO: make the manual parameter adjustment inputs below less hacky -->
     <div style="font-size: large;">
         gravity:
@@ -39,8 +42,14 @@
             <input type="number" id="inversePullY" name="inversePullY" step="10" onchange="updateInversePullY()">
         </span>
     </div>
+    <script src="js/hitbox.js"></script>
     <script src="js/sprite.js"></script>
-    <script src="js/player.js"></script>
+    <script src="js/actor.js"></script>
+    <script src="js/solid.js"></script>
+    <script src="js/solids/dog.js"></script>
+    <script src="js/actors/player.js"></script>
+    <script src="js/actors/grapple.js"></script>
+    <script src="js/collision_handler.js"></script>
     <script src="js/levels/level1.js"></script>
     <script src="js/camera.js"></script>
     <script src="js/controller.js"></script>
