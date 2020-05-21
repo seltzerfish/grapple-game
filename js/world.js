@@ -1,10 +1,10 @@
 
 // TODO: change these values back to const upon game release
-let GRAPPLE_STRENGTH_X = 0.4;
-let GRAPPLE_STRENGTH_Y = 0.5;
+let GRAPPLE_STRENGTH_X = 0.5;
+let GRAPPLE_STRENGTH_Y = 0.6;
 let GRAVITY = 0.2;
 let ACCELERATION_CAP = 1.5;
-let EXTRA_PULL_STRENGTH = 0.3;
+let EXTRA_PULL_STRENGTH = 0.2;
 
 class World {
     constructor(player, controller, camera) {
@@ -18,20 +18,21 @@ class World {
     }
 
     update() {
-        this.handleControllerInput();
         this.updatePlayer();
+        this.handleControllerInput();
         this.collisionHandler.handleCollisions();
         this.detectFallOutOfWorld();
         this.camera.updatePosition();
     }
 
     handleControllerInput() {
-        if (!this.player.isGrappled && this.controller.mouseDown) {
-            this.player.grapple(this.camera.translateInputX(this.controller.mouseDownX), 
+        if (!this.player.grapple && this.controller.mouseDown) {
+            this.player.grapple = new Grapple(this.player, this.camera.translateInputX(this.controller.mouseDownX), 
             this.camera.translateInputY(this.controller.mouseDownY));
+            this.level.actors.push(this.player.grapple);
         }
-        else if (this.player.isGrappled && !this.controller.mouseDown) {
-            this.player.ungrapple();
+        else if (this.player.grapple && !this.controller.mouseDown && (this.player.grapple.state === States.EXTENDING || this.player.grapple.state === States.ATTACHED)) {
+            this.player.grapple.state = States.RETURNING;
         }
     }
 
@@ -39,7 +40,7 @@ class World {
         this.player.xAcceleration = 0;
         this.player.yAcceleration = 0;
 
-        if (this.player.isGrappled) {
+        if (this.player.grapple) {
             this.handleGrappleMotion();
         }
         else {
@@ -52,18 +53,32 @@ class World {
     }
 
     handleGrappleMotion() {
-        const grappleLength = this.player.getGrappleLength();
-        this.player.xAcceleration += ((this.player.grappledX - this.player.x) / grappleLength) * GRAPPLE_STRENGTH_X;
-        this.player.yAcceleration += ((this.player.grappledY - this.player.y) / grappleLength) * GRAPPLE_STRENGTH_Y;
-
-        let projection = this.player.getVelocityProjectionOntoGrappleMagnitude();
-        if (projection < 0) {
-            // player is moving away from grapple
-            projection *= -1 * EXTRA_PULL_STRENGTH;
-            this.player.xAcceleration *= 1 + projection;
-            this.player.yAcceleration *= 1 + projection;
+        const state = this.player.grapple.state;
+        if (state === States.EXTENDING) {
+            this.player.grapple.extend();
         }
-        this.player.rotation = this.player.getAccelerationRadians() + 1.5708;
+        else if (state === States.RETURNING) {
+            this.player.grapple.returnToPlayer();
+        }
+        else if (state === States.RETURNED) {
+            this.player.grapple = null;
+            this.level.actors.pop(); // TODO: make this less hacky
+        }
+        if (state === States.ATTACHED) {
+            const grappleLength = this.player.getGrappleLength();
+            this.player.xAcceleration += ((this.player.grapple.getCenterX() - this.player.getCenterX()) / grappleLength) * GRAPPLE_STRENGTH_X;
+            this.player.yAcceleration += ((this.player.grapple.getCenterY() - this.player.getCenterY()) / grappleLength) * GRAPPLE_STRENGTH_Y;
+
+            let projection = this.player.getVelocityProjectionOntoGrappleMagnitude();
+            if (projection < 0) {
+                // player is moving away from grapple
+                projection *= -1 * EXTRA_PULL_STRENGTH;
+                this.player.xAcceleration *= 1 + projection;
+                this.player.yAcceleration *= 1 + projection;
+            }
+            this.player.rotation = this.player.getAccelerationRadians() + 1.5708;
+        }
+        
     }
 
     capPlayerAcceleration() {

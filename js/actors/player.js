@@ -7,29 +7,35 @@ class Player extends Actor {
 
     constructor() {
         super(0, 300, 30, 40, "playerSprite");
-        this.isGrappled = false;
-        this.grappledX = 0;
-        this.grappledY = 0;
+        this.grapple = null;
         this.animationFrameDuration = 20;
         this.animationFrames = ['playerSprite', 'idle']
         this.bounceCoefficient = 1;
+        this.grappleLength = 500;
     }
 
-    grapple(x, y) {
-        this.srcImage = "playerSpriteGrappled";
-        this.isGrappled = true;
-        this.grappledX = x;
-        this.grappledY = y;
-        this.rotation = this.getAccelerationRadians() + 1.5708;
-    }
+    // grapple(x, y) {
+    //     this.srcImage = "playerSpriteGrappled";
+    //     this.isGrappled = true;
+    //     this.grappledX = x;
+    //     this.grappledY = y;
+    //     this.rotation = this.getAccelerationRadians() + 1.5708;
+    // }
 
-    ungrapple() {
-        this.srcImage = "playerSprite";
-        this.isGrappled = false;
-    }
+    // ungrapple() {
+    //     this.srcImage = "playerSprite";
+    //     this.isGrappled = false;
+    // }
 
     getGrappleLength() {
-        return Math.sqrt(Math.pow(this.grappledX - this.x, 2) + Math.pow(this.grappledY - this.y, 2));
+        return Math.sqrt(Math.pow(this.grapple.x - this.x, 2) + Math.pow(this.grapple.y - this.y, 2));
+    }
+
+    isSwinging() {
+        if (this.grapple && this.grapple.state === States.ATTACHED) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -37,7 +43,7 @@ class Player extends Actor {
      * See https://en.wikipedia.org/wiki/Vector_projection for more.
      */
     getVelocityProjectionOntoGrappleMagnitude() {
-        const vDotG = (this.xVelocity * (this.grappledX - this.x)) + (this.yVelocity * (this.grappledY - this.y));
+        const vDotG = (this.xVelocity * (this.grapple.getCenterX() - this.x)) + (this.yVelocity * (this.grapple.getCenterY() - this.y));
         return vDotG / Math.max(this.getGrappleLength(), 1);
     }   
 

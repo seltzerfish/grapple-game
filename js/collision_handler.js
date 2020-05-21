@@ -12,8 +12,17 @@ class CollisionHandler {
     handlePlayerCollisionsWithSolids() {
         let solid;
         for (solid of this.level.solids) {
-            this.handleActorCollisionWithSolid(this.player, solid, this.player.isGrappled);
+            this.handleActorCollisionWithSolid(this.player, solid, this.player.isSwinging());
         }
+        if (this.player.grapple && this.player.grapple.state === States.EXTENDING) {
+            for (solid of this.level.solids) {
+                if (this.player.grapple.isCollidingWith(solid)) {
+                    this.player.grapple.state = States.ATTACHED;
+                    break;
+                }
+            }
+        }
+        
     }
 
     handleActorCollisionWithSolid(actor, solid, ignoreFriction=false) {

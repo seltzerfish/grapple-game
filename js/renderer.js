@@ -1,4 +1,4 @@
-const DEBUG = true;
+const DEBUG = false;
 
 //TODO: decide on whether to use the term "render" or "draw" for all methods
 class Renderer {
@@ -21,20 +21,24 @@ class Renderer {
     }
 
     drawPlayer() {
-        if (this.world.player.isGrappled) { this.drawGrapple(ctx) }
+        if (this.world.player.grapple) { this.drawGrapple(ctx) }
         this.renderSprite(this.world.player);
     }
 
     drawGrapple() {
         this.ctx.beginPath();
+        this.ctx.lineWidth = 2;
 
-        this.ctx.moveTo(this.camera.translateX(this.world.player.x) + (this.world.player.width / 2),
-            this.camera.translateY(this.world.player.y) + 20);
+        this.ctx.moveTo(this.camera.translateX(this.world.player.getCenterX()),
+            this.camera.translateY(this.world.player.getCenterY()));
 
-        this.ctx.lineTo(this.camera.translateX(this.world.player.grappledX),
-            this.camera.translateY(this.world.player.grappledY));
+        this.ctx.lineTo(this.camera.translateX(this.world.player.grapple.getCenterX()),
+            this.camera.translateY(this.world.player.grapple.getCenterY()));
 
         this.ctx.stroke();
+        this.ctx.lineWidth = 1;
+       
+
     }
 
     renderSprite(sprite) {
@@ -60,6 +64,9 @@ class Renderer {
         for (let i = 0; i < this.world.level.solids.length; i++) {
             this.renderSprite(this.world.level.solids[i]);
         }
+        for (let i = 0; i < this.world.level.actors.length; i++) {
+            this.renderSprite(this.world.level.actors[i]);
+        }
     }
 
     renderDebugInfo() {
@@ -70,13 +77,14 @@ class Renderer {
         this.ctx.fillText("x: " + this.world.player.x.toFixed(0), 300, 30);
         this.ctx.fillText("y: " + this.world.player.y.toFixed(0), 430, 30);
         this.drawHitboxes();
+        this.drawGrappleLength();
         this.drawAccelerationCompass();
     }
     
     drawHitboxes() {
-        let sprites = this.world.level.solids;
         this.ctx.strokeStyle = "red";
         this.ctx.lineWidth = 3;
+        let sprites = this.world.level.solids;
         for (let i = 0; i < sprites.length; i++) {
             let sprite = sprites[i];
             for (let j = 0; j < sprite.hitboxes.length; j++) {
@@ -89,7 +97,28 @@ class Renderer {
             let hitbox = playerHitboxes[i];
             this.ctx.strokeRect(this.camera.translateX(this.world.player.x + hitbox.xOffset), this.camera.translateY(this.world.player.y + hitbox.yOffset), hitbox.width, hitbox.height);
         }
+        sprites = this.world.level.actors;
+        for (let i = 0; i < sprites.length; i++) {
+            let sprite = sprites[i];
+            for (let j = 0; j < sprite.hitboxes.length; j++) {
+                let hitbox = sprite.hitboxes[j];
+                this.ctx.strokeRect(this.camera.translateX(sprite.x + hitbox.xOffset), this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.width, hitbox.height);
+            }
+        }
+        playerHitboxes = this.world.player.hitboxes;
+        for (let i = 0; i < playerHitboxes.length; i++) {
+            let hitbox = playerHitboxes[i];
+            this.ctx.strokeRect(this.camera.translateX(this.world.player.x + hitbox.xOffset), this.camera.translateY(this.world.player.y + hitbox.yOffset), hitbox.width, hitbox.height);
+        }
         this.ctx.lineWidth = 1;
+        this.ctx.strokeStyle = "black";
+    }
+
+    drawGrappleLength() {
+        this.ctx.strokeStyle = "green";
+        this.ctx.beginPath();
+        this.ctx.arc(this.camera.translateX(this.world.player.getCenterX()), this.camera.translateY(this.world.player.getCenterY()), this.world.player.grappleLength, 0, 2 * Math.PI);
+        this.ctx.stroke();
         this.ctx.strokeStyle = "black";
     }
 
