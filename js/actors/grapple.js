@@ -28,6 +28,7 @@ class Grapple extends Actor {
         else if (this.state === GrappleState.RETURNING) {
             this.returnToPlayer();
         }
+        // check for collisions to attach to
         else if (this.state === GrappleState.EXTENDING) {
             let solid;
             for (solid of this.level.getPossibleSolidCollisions()) {
@@ -35,8 +36,8 @@ class Grapple extends Actor {
                     this.attach();
                 }
             }
-            
         }
+        // if no collisions, keep extending
         if (this.state === GrappleState.EXTENDING) {
             this.extend();
         }
