@@ -13,35 +13,7 @@
     <img src="static/images/idle.png" id="idle" style="display: none;">
     <img src="static/images/claw.png" id="claw" style="display: none;">
     <img src="static/images/dog.png" id="dog" style="display: none;">
-    <!-- TODO: make the manual parameter adjustment inputs below less hacky -->
-    <div style="font-size: large;">
-        gravity:
-        <input type="number" id="gravity" name="gravity" step="0.1" onchange="updateGravity()">
-        bounce factor:
-        <input type="number" id="bounce" name="bounce" step="0.1" onchange="updateBounce()">
-        grapple strength X:
-        <input type="number" id="grapStrengthX" name="grapStrengthX" step="0.1" onchange="updateGrapStrengthX()">
-        grapple strength Y:
-        <input type="number" id="grapStrengthY" name="grapStrengthY" step="0.1" onchange="updateGrapStrengthY()">
-    </div>
-    <div style="font-size: large;">
-        acceleration cap:
-        <input type="number" id="maxAcc" name="maxAcc" step="0.1" onchange="updateMaxAcc()">
-        ground friction:
-        <input type="number" id="friction" name="friction" step="0.1" onchange="updateFriction()">
-        <span style="display: none;" id="extraPullStrengthSpan">
-            extra pull strength:
-            <input type="number" id="extraPullStrength" name="extraPullStrength" step="0.1" onchange="updateExtraPullStrength()">
-        </span>
-        <span style="display: none;" id="inversePullXSpan">
-            inverse acc. strength X:
-            <input type="number" id="inversePullX" name="inversePullX" step="10" onchange="updateInversePullX()">
-        </span>
-        <span style="display: none;"  id="inversePullYSpan">
-            inverse acc. strength Y:
-            <input type="number" id="inversePullY" name="inversePullY" step="10" onchange="updateInversePullY()">
-        </span>
-    </div>
+    <button onclick="toggleDebug()">Toggle Debug</button>
     <script src="js/hitbox.js"></script>
     <script src="js/sprite.js"></script>
     <script src="js/actor.js"></script>
@@ -49,11 +21,10 @@
     <script src="js/solids/dog.js"></script>
     <script src="js/actors/player.js"></script>
     <script src="js/actors/grapple.js"></script>
-    <script src="js/collision_handler.js"></script>
+    <script src="js/level.js"></script>
     <script src="js/levels/level1.js"></script>
     <script src="js/camera.js"></script>
     <script src="js/controller.js"></script>
-    <script src="js/world.js"></script>
     <script src="js/renderer.js"></script>
     <script src="js/main.js"></script>
 </body>

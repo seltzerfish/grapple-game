@@ -63,16 +63,13 @@ class Hitbox {
             else {
                 mtv_y = bottom;
             }
-
             if (Math.abs(mtv_x) < Math.abs(mtv_y)) {
                 mtv_y = 0;
             }
             else {
                 mtv_x = 0;
             }
-
         }
-
         return [mtv_x, mtv_y];
     }
 }

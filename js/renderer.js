@@ -1,10 +1,10 @@
-const DEBUG = false;
+let DEBUG = false;
 
 //TODO: decide on whether to use the term "render" or "draw" for all methods
 class Renderer {
-    constructor(world, ctx, camera) {
+    constructor(level, ctx, camera) {
         this.ctx = ctx;
-        this.world = world;
+        this.level = level;
         this.camera = camera;
         this.accelerationGraph = [];
     }
@@ -12,7 +12,7 @@ class Renderer {
     render() {
         this.clearCanvas();
         this.drawPlayer();
-        this.drawSpritesOnLevel();
+        this.drawOtherSprites();
         if (DEBUG) { this.renderDebugInfo(this.ctx) }
     }
 
@@ -21,33 +21,33 @@ class Renderer {
     }
 
     drawPlayer() {
-        if (this.world.player.grapple) { this.drawGrapple(ctx) }
-        this.renderSprite(this.world.player);
+        if (this.level.player.grapple) { this.drawGrapple(ctx) }
+        this.renderSprite(this.level.player);
     }
 
     drawGrapple() {
         this.ctx.beginPath();
         this.ctx.lineWidth = 2;
 
-        this.ctx.moveTo(this.camera.translateX(this.world.player.getCenterX()),
-            this.camera.translateY(this.world.player.getCenterY()));
+        this.ctx.moveTo(this.camera.translateX(this.level.player.getCenterX()),
+            this.camera.translateY(this.level.player.getCenterY()));
 
-        this.ctx.lineTo(this.camera.translateX(this.world.player.grapple.getCenterX()),
-            this.camera.translateY(this.world.player.grapple.getCenterY()));
+        this.ctx.lineTo(this.camera.translateX(this.level.player.grapple.getCenterX()),
+            this.camera.translateY(this.level.player.grapple.getCenterY()));
 
         this.ctx.stroke();
         this.ctx.lineWidth = 1;
-       
+
 
     }
 
     renderSprite(sprite) {
         if (sprite.rotation) {
             this.ctx.save();
-            this.ctx.translate(this.camera.translateX(sprite.x)  + sprite.width/2, this.camera.translateY(sprite.y) + sprite.height/2);
+            this.ctx.translate(this.camera.translateX(sprite.x) + sprite.width / 2, this.camera.translateY(sprite.y) + sprite.height / 2);
             this.ctx.rotate(sprite.rotation);
             const img = document.getElementById(sprite.srcImage);
-            this.ctx.drawImage(img, -(sprite.width/2), -(sprite.height/2), sprite.width, sprite.height);
+            this.ctx.drawImage(img, -(sprite.width / 2), -(sprite.height / 2), sprite.width, sprite.height);
             this.ctx.restore();
         }
         else if (sprite.srcImage == "") {
@@ -60,31 +60,41 @@ class Renderer {
 
     }
 
-    drawSpritesOnLevel() {
-        for (let i = 0; i < this.world.level.solids.length; i++) {
-            this.renderSprite(this.world.level.solids[i]);
+    drawOtherSprites() {
+        for (let i = 0; i < this.level.solids.length; i++) {
+            this.renderSprite(this.level.solids[i]);
         }
-        for (let i = 0; i < this.world.level.actors.length; i++) {
-            this.renderSprite(this.world.level.actors[i]);
+        for (let i = 0; i < this.level.actors.length; i++) {
+            this.renderSprite(this.level.actors[i]);
         }
     }
 
+
+    /**
+     * !!!!!!!!!!!!!!    WARNING    !!!!!!!!!!!!!!
+     * 
+     * Past this point, the rest of the code in this class is for rendering debug visuals. 
+     * It is hideous, inefficient, and unreadable.
+     * Proceed with caution
+    */
+
+
     renderDebugInfo() {
         this.ctx.font = "30px Arial";
-        this.world.player.topSpeed = Math.max(this.world.player.topSpeed, this.world.player.getVelocity());
-        this.ctx.fillText("Velocity: " + this.world.player.getVelocity().toFixed(1), 10, 30);
-        this.ctx.fillText("Top Velocity: " + this.world.player.topSpeed.toFixed(1), 10, 60);
-        this.ctx.fillText("x: " + this.world.player.x.toFixed(0), 300, 30);
-        this.ctx.fillText("y: " + this.world.player.y.toFixed(0), 430, 30);
+        this.level.player.topSpeed = Math.max(this.level.player.topSpeed, this.level.player.getVelocity());
+        this.ctx.fillText("Velocity: " + this.level.player.getVelocity().toFixed(1), 10, 30);
+        this.ctx.fillText("Top Velocity: " + this.level.player.topSpeed.toFixed(1), 10, 60);
+        this.ctx.fillText("x: " + this.level.player.x.toFixed(0), 300, 30);
+        this.ctx.fillText("y: " + this.level.player.y.toFixed(0), 430, 30);
         this.drawHitboxes();
         this.drawGrappleLength();
         this.drawAccelerationCompass();
     }
-    
+
     drawHitboxes() {
         this.ctx.strokeStyle = "red";
         this.ctx.lineWidth = 3;
-        let sprites = this.world.level.solids;
+        let sprites = this.level.solids;
         for (let i = 0; i < sprites.length; i++) {
             let sprite = sprites[i];
             for (let j = 0; j < sprite.hitboxes.length; j++) {
@@ -92,12 +102,12 @@ class Renderer {
                 this.ctx.strokeRect(this.camera.translateX(sprite.x + hitbox.xOffset), this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.width, hitbox.height);
             }
         }
-        let playerHitboxes = this.world.player.hitboxes;
+        let playerHitboxes = this.level.player.hitboxes;
         for (let i = 0; i < playerHitboxes.length; i++) {
             let hitbox = playerHitboxes[i];
-            this.ctx.strokeRect(this.camera.translateX(this.world.player.x + hitbox.xOffset), this.camera.translateY(this.world.player.y + hitbox.yOffset), hitbox.width, hitbox.height);
+            this.ctx.strokeRect(this.camera.translateX(this.level.player.x + hitbox.xOffset), this.camera.translateY(this.level.player.y + hitbox.yOffset), hitbox.width, hitbox.height);
         }
-        sprites = this.world.level.actors;
+        sprites = this.level.actors;
         for (let i = 0; i < sprites.length; i++) {
             let sprite = sprites[i];
             for (let j = 0; j < sprite.hitboxes.length; j++) {
@@ -105,10 +115,10 @@ class Renderer {
                 this.ctx.strokeRect(this.camera.translateX(sprite.x + hitbox.xOffset), this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.width, hitbox.height);
             }
         }
-        playerHitboxes = this.world.player.hitboxes;
+        playerHitboxes = this.level.player.hitboxes;
         for (let i = 0; i < playerHitboxes.length; i++) {
             let hitbox = playerHitboxes[i];
-            this.ctx.strokeRect(this.camera.translateX(this.world.player.x + hitbox.xOffset), this.camera.translateY(this.world.player.y + hitbox.yOffset), hitbox.width, hitbox.height);
+            this.ctx.strokeRect(this.camera.translateX(this.level.player.x + hitbox.xOffset), this.camera.translateY(this.level.player.y + hitbox.yOffset), hitbox.width, hitbox.height);
         }
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = "black";
@@ -117,7 +127,7 @@ class Renderer {
     drawGrappleLength() {
         this.ctx.strokeStyle = "green";
         this.ctx.beginPath();
-        this.ctx.arc(this.camera.translateX(this.world.player.getCenterX()), this.camera.translateY(this.world.player.getCenterY()), this.world.player.grappleLength, 0, 2 * Math.PI);
+        this.ctx.arc(this.camera.translateX(this.level.player.getCenterX()), this.camera.translateY(this.level.player.getCenterY()), this.level.player.grappleLength - 30, 0, 2 * Math.PI);
         this.ctx.stroke();
         this.ctx.strokeStyle = "black";
     }
@@ -125,7 +135,7 @@ class Renderer {
     drawAccelerationCompass() {
         // Hacky AF. don't feel like refactoring. recommended not to touch too much
         const scalingFactor = 35;
-        const r = ACCELERATION_CAP * scalingFactor;
+        const r = this.level.player.accelerationCap * scalingFactor;
         this.ctx.beginPath();
         this.ctx.arc(100, 150, r, 0, 2 * Math.PI);
         this.ctx.lineWidth = 2;
@@ -133,8 +143,8 @@ class Renderer {
 
         this.ctx.beginPath();
         this.ctx.moveTo(100, 150);
-        const x = this.world.player.xAcceleration * scalingFactor;
-        const y = this.world.player.yAcceleration * scalingFactor;
+        const x = this.level.player.xAcceleration * scalingFactor;
+        const y = this.level.player.yAcceleration * scalingFactor;
         const dist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
         const red = 255 * (dist / r);
         const green = 255 - (255 * (dist / r));
@@ -151,20 +161,29 @@ class Renderer {
 
         let startX = 30;
         let startY = 390;
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = "green";
+
         for (let i = 0; i < this.accelerationGraph.length; i++) {
             let entry = this.accelerationGraph[i];
-            this.ctx.beginPath();
             this.ctx.moveTo(startX + i, startY);
-            this.ctx.strokeStyle = entry[1];
+            // this.ctx.strokeStyle = entry[1];
             this.ctx.lineTo(startX + i, startY - (entry[0] * 1.5));
-            this.ctx.stroke();
-        }
 
+        }
+        this.ctx.stroke();
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = "black";
         this.ctx.fillText("Acceleration", 30, 260);
-
-
     }
+}
 
+
+toggleDebug = function() {
+    if (DEBUG) {
+        DEBUG = false
+    }
+    else {
+        DEBUG = true;
+    }
 }

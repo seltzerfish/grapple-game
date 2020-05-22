@@ -2,7 +2,7 @@ class Sprite {
     
     constructor(x=0, y=0, width=50, height=50, srcImage='', rotation=0, bounceCoefficient=0.25, frictionCoefficient=0.15) {
         if (this.constructor === Sprite) {
-            throw new Error('Sprite class is Abstract. Use Actor or Solid instead.')
+            throw new Error('Sprite class is Abstract. Use an Actor or Solid instead.');
         }
         this.x = x;
         this.y = y;
@@ -12,11 +12,9 @@ class Sprite {
         this.rotation = rotation;
         this.bounceCoefficient = bounceCoefficient;
         this.frictionCoefficient = frictionCoefficient;
-        this.hitboxes = [new Hitbox(this, 0, 0, width, height)]; // default hitbox is the sprite image boundary
-
-        // Used for handling collisions. represents the minimum vector needed to remove this sprite from another.
         this.minTranslationX = 0;
         this.minTranslationY = 0;
+        this.hitboxes = [new Hitbox(this, 0, 0, width, height)]; // default hitbox is the sprite image boundary
     }
 
     getCenterX() {

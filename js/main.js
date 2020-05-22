@@ -1,24 +1,28 @@
 "use strict";
 
-var time = null;
-var timedelta = 0;
-var animationFrameRequest = null;
-var gameStateUpdated = false;
-var renderFunction = null;
 var canvas;
 var ctx;
 var game;
 
 class Game {
   constructor() {
-    this.player = new Player();
     this.controller = new Controller();
+    this.player = new Player(this.controller);
     this.camera = new Camera(this.player);
-    this.world = new World(this.player, this.controller, this.camera);
-    this.world.setDefaultValues();
-    this.renderer = new Renderer(this.world, ctx, this.camera);
+    this.setupLevel(LEVEL_1);
+    
+    // this.level.setDefaultValues();
+    this.renderer = new Renderer(this.level, ctx, this.camera);
     window.addEventListener("mousedown", (event) => this.controller.keyListener(event));
     window.addEventListener("mouseup", (event) => this.controller.keyListener(event));
+  }
+
+  setupLevel(level) {
+    this.level = level;
+    this.player.setLevel(this.level);
+    this.level.camera = this.camera;
+    this.level.controller = this.controller;
+    this.level.player = this.player;
   }
 }
 
@@ -33,7 +37,7 @@ window.onload = function init() {
 }
 
 function loop() {
-  game.world.update();
+  game.level.update();
   game.renderer.render(ctx);
   window.requestAnimationFrame(loop);
 }

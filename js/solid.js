@@ -3,9 +3,7 @@
  */
 
 class Solid extends Sprite {
-    constructor(x, y, width, height, srcImage, canBeGrappled=true) {
+    constructor(x, y, width, height, srcImage) {
         super(x, y, width, height, srcImage);
-        this.canBeGrappled = canBeGrappled;
     }
-
 }
