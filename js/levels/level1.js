@@ -1,6 +1,6 @@
 
 const width = 10000;
-const height = 5000;
+const height = 2000;
 const playerStartX = -350;
 const playerStartY = 200;
 const gravity = 0.25;

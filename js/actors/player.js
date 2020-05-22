@@ -12,7 +12,7 @@ class Player extends Actor {
         this.bounceCoefficient = 1;
         this.grappleStrengthX = 0.6;
         this.grappleStrengthY = 0.7;
-        this.grappleLength = 530;
+        this.grappleLength = 650;
         this.accelerationCap = 1.5;
         this.extraPullStrength = 0.2;
     }

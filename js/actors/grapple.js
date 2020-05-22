@@ -60,7 +60,7 @@ class Grapple extends Actor {
         const diffX = this.endX - this.x;
         const diffY = this.endY - this.y;
         const mag = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
-        if (mag < 30) {
+        if (mag < 60) {
             this.return();
         }
         else {

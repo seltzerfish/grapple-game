@@ -127,7 +127,7 @@ class Renderer {
     drawGrappleLength() {
         this.ctx.strokeStyle = "green";
         this.ctx.beginPath();
-        this.ctx.arc(this.camera.translateX(this.level.player.getCenterX()), this.camera.translateY(this.level.player.getCenterY()), this.level.player.grappleLength - 30, 0, 2 * Math.PI);
+        this.ctx.arc(this.camera.translateX(this.level.player.getCenterX()), this.camera.translateY(this.level.player.getCenterY()), this.level.player.grappleLength - 60, 0, 2 * Math.PI);
         this.ctx.stroke();
         this.ctx.strokeStyle = "black";
     }
