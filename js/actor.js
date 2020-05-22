@@ -60,7 +60,7 @@ class Actor extends Sprite {
     isMovingRight() {
         return this.xVelocity > 0;
     }
-    
+
     animate() {
         if (this.animationFrames.length > 1) {
             this.animationTimer += 1;
@@ -73,7 +73,7 @@ class Actor extends Sprite {
         }
     }
 
-    handleCollisionsWithSolids(ignoreFriction=false) {
+    handleCollisionsWithSolids(ignoreFriction = false) {
         let solid;
         for (solid of this.level.getPossibleSolidCollisions(this)) {
             if (this.isCollidingWith(solid)) {
@@ -86,18 +86,18 @@ class Actor extends Sprite {
     }
 
     bounceOffSolid(solid) {
-         // Move actor out of solid
-         this.x += this.minTranslationX;
-         this.y += this.minTranslationY;
+        // Move actor out of solid
+        this.x += this.minTranslationX;
+        this.y += this.minTranslationY;
 
-         // bounce this off of solid
-         const magnitude = this.getTranslationVectorMagnitude();
-         if (this.minTranslationX !== 0 && Math.sign(this.minTranslationX) !== Math.sign(this.xVelocity)) {
-             this.xVelocity *= -1 * Math.abs(this.minTranslationX / magnitude) * solid.bounceCoefficient * this.bounceCoefficient;
-         }
-         if (this.minTranslationY !== 0  && Math.sign(this.minTranslationY) !== Math.sign(this.yVelocity)) {
-             this.yVelocity *= -1 * Math.abs(this.minTranslationY / magnitude) * solid.bounceCoefficient * this.bounceCoefficient;
-         }
+        // bounce this off of solid
+        const magnitude = this.getTranslationVectorMagnitude();
+        if (this.minTranslationX !== 0 && Math.sign(this.minTranslationX) !== Math.sign(this.xVelocity)) {
+            this.xVelocity *= -1 * Math.abs(this.minTranslationX / magnitude) * solid.bounceCoefficient * this.bounceCoefficient;
+        }
+        if (this.minTranslationY !== 0 && Math.sign(this.minTranslationY) !== Math.sign(this.yVelocity)) {
+            this.yVelocity *= -1 * Math.abs(this.minTranslationY / magnitude) * solid.bounceCoefficient * this.bounceCoefficient;
+        }
     }
 
     applyFriction(solid) {

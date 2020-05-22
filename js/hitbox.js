@@ -5,7 +5,7 @@
  */
 class Hitbox {
 
-    constructor(sprite, xOffset, yOffset, width, height, rotation=0) {
+    constructor(sprite, xOffset, yOffset, width, height, rotation = 0) {
         this.sprite = sprite;
         this.xOffset = xOffset;
         this.yOffset = yOffset;

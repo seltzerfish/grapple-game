@@ -10,7 +10,7 @@ class Game {
     this.player = new Player(this.controller);
     this.camera = new Camera(this.player);
     this.setupLevel(LEVEL_1);
-    
+
     // this.level.setDefaultValues();
     this.renderer = new Renderer(this.level, ctx, this.camera);
     window.addEventListener("mousedown", (event) => this.controller.keyListener(event));

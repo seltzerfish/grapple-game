@@ -3,7 +3,7 @@
  */
 class Player extends Actor {
 
-    constructor(controller, x=0, y=300, w=30, h=40) {
+    constructor(controller, x = 0, y = 300, w = 30, h = 40) {
         super(x, y, w, h, "playerSprite");
         this.controller = controller;
         this.grapple = null;

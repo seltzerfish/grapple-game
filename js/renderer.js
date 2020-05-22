@@ -179,7 +179,7 @@ class Renderer {
 }
 
 
-toggleDebug = function() {
+toggleDebug = function () {
     if (DEBUG) {
         DEBUG = false
     }

@@ -1,6 +1,6 @@
 class Sprite {
-    
-    constructor(x=0, y=0, width=50, height=50, srcImage='', rotation=0, bounceCoefficient=0.25, frictionCoefficient=0.15) {
+
+    constructor(x = 0, y = 0, width = 50, height = 50, srcImage = '', rotation = 0, bounceCoefficient = 0.25, frictionCoefficient = 0.15) {
         if (this.constructor === Sprite) {
             throw new Error('Sprite class is Abstract. Use an Actor or Solid instead.');
         }
@@ -38,7 +38,7 @@ class Sprite {
                 this.minTranslationY += mtv[1];
             }
         }
-        if (this.minTranslationX !==0 || this.minTranslationY !== 0) {
+        if (this.minTranslationX !== 0 || this.minTranslationY !== 0) {
             return true;
         }
         return false;
