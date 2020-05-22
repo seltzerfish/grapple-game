@@ -4,13 +4,14 @@ class Camera {
         this.anchor = anchor;
         this.x = 0;
         this.y = 0;
+        this.followStrength = 0.0005;
     }
 
     updatePosition() {
         const xDistance = this.anchor.getCenterX() - this.x;
         const yDistance = this.anchor.getCenterY() - this.y;
-        this.x += Math.min(0.0008 * Math.pow(xDistance, 2) * Math.sign(xDistance), xDistance);
-        this.y += Math.min(0.0008 * Math.pow(yDistance, 2) * Math.sign(yDistance), yDistance);
+        this.x += Math.min(this.followStrength * Math.pow(xDistance, 2) * Math.sign(xDistance), xDistance);
+        this.y += Math.min(this.followStrength * Math.pow(yDistance, 2) * Math.sign(yDistance), yDistance);
     }
 
     // Translate absolute position to relative position (to the camera).
