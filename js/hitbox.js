@@ -4,6 +4,7 @@
  * contains a reference to the sprite it belongs to so that its position doesn't have to be constantly updated
  */
 class Hitbox {
+
     constructor(sprite, xOffset, yOffset, width, height, rotation=0) {
         this.sprite = sprite;
         this.xOffset = xOffset;

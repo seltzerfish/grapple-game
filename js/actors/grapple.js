@@ -1,5 +1,5 @@
 // state enum
-const GrappleState =  {
+const GrappleState = {
     EXTENDING: 1,
     ATTACHED: 2,
     RETURNING: 3,
@@ -96,7 +96,6 @@ class Grapple extends Actor {
             else {
                 this.y += diffY;
             }
-
         }
     }
 }

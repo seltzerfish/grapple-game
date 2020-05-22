@@ -60,7 +60,7 @@ class Level {
      * @param {Actor} actor 
      */
     getPossibleActorCollisions(actor) {
-         // TODO: implement a grid system to make this smarter.
-         return this.actors;
+        // TODO: implement a grid system to make this smarter.
+        return this.actors;
     }
 }
