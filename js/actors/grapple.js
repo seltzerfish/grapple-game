@@ -19,6 +19,7 @@ class Grapple extends Actor {
         this.returnAcceleration = 2;
         this.returningSpeed = 0;
         this.calculateEndpoint(targetX, targetY);
+        this.rotation = this.calculateRotation(targetY,targetX, player.y, player.x);
     }
 
     act() {
@@ -75,6 +76,16 @@ class Grapple extends Actor {
         this.player.srcImage = "playerSprite";
     }
 
+    //change names/vars to whatever you want
+    //returns an angle from two vectors in radians
+    //shifted by PI/2 because of the starting place of the image.
+    //the image was saved upright and from 0 radians would rotate from upright to left
+    //shift it by however much you want.
+    //this is only called once during the instantiation of the grapple. 
+    calculateRotation(vectorOneY, vectorOneX, vectorTwoY, vectorTwoX) { 
+        return Math.atan2(vectorTwoY - vectorOneY, vectorTwoX - vectorOneX) + (Math.PI/2);
+    }
+    
     returnToPlayer() {
         const diffX = this.player.getCenterX() - this.getCenterX();
         const diffY = this.player.getCenterY() - this.getCenterY();
