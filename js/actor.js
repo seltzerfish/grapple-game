@@ -8,6 +8,7 @@ class Actor extends Sprite {
         this.topSpeed = 0;
         this.xAcceleration = 0;
         this.yAcceleration = 0;
+        this.bounceCoefficient = 1;
         this.frictionCoefficient = 0;
         this.animationTimer = 0;
         this.animationFrameDuration = 20;
@@ -61,6 +62,7 @@ class Actor extends Sprite {
         return this.xVelocity > 0;
     }
 
+    // rotates between images in this.animationFrames after this.animationFrameDuration milliseconds.
     animate() {
         if (this.animationFrames.length > 1) {
             this.animationTimer += 1;

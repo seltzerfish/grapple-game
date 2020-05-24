@@ -11,6 +11,7 @@ class Renderer {
 
     render() {
         this.clearCanvas();
+        this.drawBackground();
         this.drawPlayer();
         this.drawOtherSprites();
         if (DEBUG) { this.renderDebugInfo(this.ctx) }
@@ -18,6 +19,42 @@ class Renderer {
 
     clearCanvas() {
         this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    drawBackground() {
+        let bg = this.level.background;
+        let layer;
+
+        for (layer of bg.layers) {
+            const img = document.getElementById(layer.image);
+            this.fillCanvasWithImage(img, layer.x, layer.y);
+        }
+    }
+
+    fillCanvasWithImage(img, x, y) {
+        // get the repeated position closest to the viewport
+        const xStart = x % img.width;
+        const yStart = y % img.height;
+
+        const repetitionsLeft = Math.max(0, Math.ceil(xStart / img.width));
+        const repetitionsRight = Math.max(0, Math.ceil((canvas.width - (xStart + img.width)) / img.width));
+        const repetitionsTop = Math.max(0, Math.ceil(yStart / img.height));
+        const repetitionsBottom = Math.max(0, Math.ceil((canvas.height - (yStart + img.height)) / img.height));
+
+        const beginDrawingX = xStart - (repetitionsLeft * img.width);
+        const beginDrawingY = yStart - (repetitionsTop * img.height);
+        const repetitionsX = 1 + repetitionsLeft + repetitionsRight;
+        const repetitionsY = 1 + repetitionsTop + repetitionsBottom;
+
+        // draw each image
+        console.log(repetitionsTop);
+        for (let i = 0; i < repetitionsX; i++) {
+            for (let j = 0; j < repetitionsY; j++) {
+                // for some reason there's a 1 pixel gap between images when i repeat them,
+                // so i had to account for that with the "- i" and the "- j"
+                this.ctx.drawImage(img, beginDrawingX + (i * img.width) - i, beginDrawingY + (j * img.height) - j);
+            }
+        }
     }
 
     drawPlayer() {

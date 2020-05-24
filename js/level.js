@@ -9,9 +9,10 @@
  */
 class Level {
 
-    constructor(width, height, playerStartX, playerStartY, gravity, solids = [], actors = []) {
+    constructor(width, height, background, playerStartX, playerStartY, gravity, solids = [], actors = []) {
         this.width = width;
         this.height = height;
+        this.background = background;
         this.playerStartX = playerStartX;
         this.playerStartY = playerStartY;
         this.gravity = gravity;
@@ -34,6 +35,7 @@ class Level {
         this.player.act();
         this.player.animate();
         this.camera.updatePosition();
+        this.background.update(this.camera);
 
         let actor;
         for (actor of this.actors) {

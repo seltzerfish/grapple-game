@@ -3,13 +3,12 @@
  */
 class Player extends Actor {
 
-    constructor(controller, x = 0, y = 300, w = 30, h = 40) {
+    constructor(controller, x = 0, y = 300, w = 28, h = 44) {
         super(x, y, w, h, "playerSprite");
         this.controller = controller;
         this.grapple = null;
         this.animationFrameDuration = 20;
         this.animationFrames = ['playerSprite', 'idle']
-        this.bounceCoefficient = 1;
         this.grappleStrengthX = 0.6;
         this.grappleStrengthY = 0.7;
         this.grappleLength = 650;
