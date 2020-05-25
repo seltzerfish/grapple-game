@@ -47,7 +47,6 @@ class Renderer {
         const repetitionsY = 1 + repetitionsTop + repetitionsBottom;
 
         // draw each image
-        console.log(repetitionsTop);
         for (let i = 0; i < repetitionsX; i++) {
             for (let j = 0; j < repetitionsY; j++) {
                 // for some reason there's a 1 pixel gap between images when i repeat them,
