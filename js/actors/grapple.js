@@ -19,7 +19,7 @@ class Grapple extends Actor {
         this.returnAcceleration = 2;
         this.returningSpeed = 0;
         this.calculateEndpoint(targetX, targetY);
-        this.rotation = this.calculateRotation(targetY,targetX, player.y, player.x);
+        this.rotation = this.calculateRotation(targetX,targetY, player.x, player.y);
     }
 
     act() {
@@ -76,13 +76,19 @@ class Grapple extends Actor {
         this.player.srcImage = "playerSprite";
     }
 
-    //change names/vars to whatever you want
-    //returns an angle from two vectors in radians
-    //shifted by PI/2 because of the starting place of the image.
-    //the image was saved upright and from 0 radians would rotate from upright to left
-    //shift it by however much you want.
-    //this is only called once during the instantiation of the grapple. 
-    calculateRotation(vectorOneY, vectorOneX, vectorTwoY, vectorTwoX) { 
+    /**
+     * Change names/vars to whatever you want
+     * Takes the arctan of the difference between two vectors.
+     * Returns an angle from two vectors in radians
+     * Shifted by PI/2 because of the starting place of the image.
+     * The image was saved upright. Starting from 0 radians would cause it to rotate incorrectly
+     * This is only called once during the instantiation of the grapple.
+     * @vectorOneX the x direction of the first vector
+     * @vectorOneY the y direction of the first vector
+     * @vectorTwoX the x direction of the second vector
+     * @vectorTwoY the y direction of the second vector
+    */
+    calculateRotation(vectorOneX, vectorOneY, vectorTwoX, vectorTwoY) { 
         return Math.atan2(vectorTwoY - vectorOneY, vectorTwoX - vectorOneX) + (Math.PI/2);
     }
     
