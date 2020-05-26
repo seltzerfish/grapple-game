@@ -12,8 +12,9 @@ class Renderer {
     render() {
         this.clearCanvas();
         this.drawBackground();
-        this.drawPlayer();
         this.drawOtherSprites();
+        this.drawPlayer();
+
         if (DEBUG) { this.renderDebugInfo(this.ctx) }
     }
 
@@ -49,29 +50,29 @@ class Renderer {
         // draw each image
         for (let i = 0; i < repetitionsX; i++) {
             for (let j = 0; j < repetitionsY; j++) {
-                // for some reason there's a 1 pixel gap between images when i repeat them,
-                // so i had to account for that with the "- i" and the "- j"
-                this.ctx.drawImage(img, beginDrawingX + (i * img.width) - i, beginDrawingY + (j * img.height) - j);
+                this.ctx.drawImage(img, beginDrawingX + (i * img.width), beginDrawingY + (j * img.height));
             }
         }
     }
 
     drawPlayer() {
-        if (this.level.player.grapple) { this.drawGrapple(ctx) }
+        if (this.level.player.grapple) { this.drawGrappleWire() }
         this.renderSprite(this.level.player);
     }
 
-    drawGrapple() {
+    drawGrappleWire() {
         this.ctx.beginPath();
-        this.ctx.lineWidth = 2;
+        this.ctx.lineWidth = 4;
+        this.ctx.strokeStyle = "#ced25c";
 
         this.ctx.moveTo(this.camera.translateX(this.level.player.getCenterX()),
             this.camera.translateY(this.level.player.getCenterY()));
 
-        this.ctx.lineTo(this.camera.translateX(this.level.player.grapple.getCenterX()),
-            this.camera.translateY(this.level.player.grapple.getCenterY()));
+        this.ctx.lineTo(this.camera.translateX(this.level.player.grapple.getWirePositionX()),
+            this.camera.translateY(this.level.player.grapple.getWirePositionY()));
 
         this.ctx.stroke();
+        this.ctx.strokeStyle = "black";
         this.ctx.lineWidth = 1;
 
 
@@ -80,10 +81,10 @@ class Renderer {
     renderSprite(sprite) {
         if (sprite.rotation) {
             this.ctx.save();
-            this.ctx.translate(this.camera.translateX(sprite.x) + sprite.width / 2, this.camera.translateY(sprite.y) + sprite.height / 2);
+            this.ctx.translate(this.camera.translateX(sprite.x) + Math.round(sprite.width / 2), this.camera.translateY(sprite.y) + Math.round(sprite.height / 2));
             this.ctx.rotate(sprite.rotation);
             const img = document.getElementById(sprite.srcImage);
-            this.ctx.drawImage(img, -(sprite.width / 2), -(sprite.height / 2), sprite.width, sprite.height);
+            this.ctx.drawImage(img, -Math.round(sprite.width / 2), -Math.round(sprite.height / 2), sprite.width, sprite.height);
             this.ctx.restore();
         }
         else if (sprite.srcImage == "") {

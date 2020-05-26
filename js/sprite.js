@@ -18,11 +18,11 @@ class Sprite {
     }
 
     getCenterX() {
-        return this.x + (this.width / 2)
+        return Math.round(this.x + (this.width / 2));
     }
 
     getCenterY() {
-        return this.y + (this.height / 2)
+        return Math.round(this.y + (this.height / 2));
     }
 
     isCollidingWith(otherSprite) {

@@ -21,8 +21,8 @@ class Actor extends Sprite {
     }
 
     updatePosition() {
-        this.x += this.xVelocity;
-        this.y += this.yVelocity;
+        this.x += Math.round(this.xVelocity);
+        this.y += Math.round(this.yVelocity);
     }
 
     updateVelocity() {

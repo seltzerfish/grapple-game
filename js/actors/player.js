@@ -3,12 +3,13 @@
  */
 class Player extends Actor {
 
-    constructor(controller, x = 0, y = 300, w = 28, h = 44) {
+    constructor(controller, x = 0, y = 300, w = 42, h = 66) {
         super(x, y, w, h, "playerSprite");
+        this.hitboxes = [new Hitbox(this, 0, 0, this.width - 4, this.height - 4)];
         this.controller = controller;
         this.grapple = null;
         this.animationFrameDuration = 20;
-        this.animationFrames = ['playerSprite', 'idle']
+        this.animationFrames = ['playerSprite']
         this.grappleStrengthX = 0.6;
         this.grappleStrengthY = 0.7;
         this.grappleLength = 650;
@@ -48,8 +49,8 @@ class Player extends Actor {
         }
         if (state === GrappleState.ATTACHED) {
             const grappleLength = this.getGrappleLength();
-            this.xAcceleration += ((this.grapple.getCenterX() - this.getCenterX()) / grappleLength) * this.grappleStrengthX;
-            this.yAcceleration += ((this.grapple.getCenterY() - this.getCenterY()) / grappleLength) * this.grappleStrengthY;
+            this.xAcceleration += ((this.grapple.getWirePositionX() - this.getCenterX()) / grappleLength) * this.grappleStrengthX;
+            this.yAcceleration += ((this.grapple.getWirePositionY() - this.getCenterY()) / grappleLength) * this.grappleStrengthY;
 
             let projection = this.getVelocityProjectionOntoGrappleMagnitude();
             if (projection < 0) {
@@ -58,7 +59,7 @@ class Player extends Actor {
                 this.xAcceleration *= 1 + projection;
                 this.yAcceleration *= 1 + projection;
             }
-            this.rotation = this.getAccelerationRadians() + 1.5708;
+            this.rotation = this.getAccelerationRadians() + Math.PI / 2;
         }
     }
 
@@ -72,7 +73,7 @@ class Player extends Actor {
     }
 
     getGrappleLength() {
-        return Math.sqrt(Math.pow(this.grapple.getCenterX() - this.getCenterX(), 2) + Math.pow(this.grapple.getCenterY() - this.getCenterY(), 2));
+        return Math.sqrt(Math.pow(this.grapple.getWirePositionX() - this.getCenterX(), 2) + Math.pow(this.grapple.getWirePositionY() - this.getCenterY(), 2));
     }
 
     isSwinging() {
@@ -84,7 +85,7 @@ class Player extends Actor {
 
     // Used for measuring how quickly the player is moving away from the grapple point
     getVelocityProjectionOntoGrappleMagnitude() {
-        const vDotG = (this.xVelocity * (this.grapple.getCenterX() - this.x)) + (this.yVelocity * (this.grapple.getCenterY() - this.y));
+        const vDotG = (this.xVelocity * (this.grapple.getWirePositionX() - this.x)) + (this.yVelocity * (this.grapple.getWirePositionY() - this.y));
         return vDotG / Math.max(this.getGrappleLength(), 1);
     }
 
