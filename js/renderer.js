@@ -88,7 +88,11 @@ class Renderer {
             this.ctx.restore();
         }
         else if (sprite.srcImage == "") {
-            this.ctx.fillRect(this.camera.translateX(sprite.x), this.camera.translateY(sprite.y), sprite.width, sprite.height);
+            this.ctx.fillStyle = "white";
+            let hitbox;
+            for (hitbox of sprite.hitboxes) {
+                this.ctx.fillRect(this.camera.translateX(sprite.x + hitbox.xOffset), this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.width, hitbox.height);
+            }
         }
         else {
             const img = document.getElementById(sprite.srcImage);

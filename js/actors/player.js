@@ -59,7 +59,6 @@ class Player extends Actor {
                 this.xAcceleration *= 1 + projection;
                 this.yAcceleration *= 1 + projection;
             }
-            this.rotation = this.getAccelerationRadians() + Math.PI / 2;
         }
     }
 
