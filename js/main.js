@@ -15,6 +15,7 @@ class Game {
     this.renderer = new Renderer(this.level, ctx, this.camera);
     window.addEventListener("mousedown", (event) => this.controller.keyListener(event));
     window.addEventListener("mouseup", (event) => this.controller.keyListener(event));
+    window.addEventListener('mousemove', (event) => this.controller.updateMousePos(event));
   }
 
   setupLevel(level) {
@@ -23,6 +24,7 @@ class Game {
     this.level.camera = this.camera;
     this.level.controller = this.controller;
     this.level.player = this.player;
+    this.level.actors.push(this.player);
   }
 }
 
@@ -41,6 +43,3 @@ function loop() {
   game.renderer.render(ctx);
   window.requestAnimationFrame(loop);
 }
-
-
-

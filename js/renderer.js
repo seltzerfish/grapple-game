@@ -14,8 +14,9 @@ class Renderer {
         this.drawBackground();
         this.drawOtherSprites();
         this.drawPlayer();
-
-        if (DEBUG) { this.renderDebugInfo(this.ctx) }
+        if (DEBUG) {
+            this.renderDebugInfo(this.ctx)
+        }
     }
 
     clearCanvas() {
@@ -56,8 +57,11 @@ class Renderer {
     }
 
     drawPlayer() {
-        if (this.level.player.grapple) { this.drawGrappleWire() }
+        if (this.level.player.grapple) {
+            this.drawGrappleWire();
+        }
         this.renderSprite(this.level.player);
+        this.renderSprite(this.level.player.arm);
     }
 
     drawGrappleWire() {
@@ -78,27 +82,51 @@ class Renderer {
 
     }
 
-    renderSprite(sprite) {
-        if (sprite.rotation) {
-            this.ctx.save();
-            this.ctx.translate(this.camera.translateX(sprite.x) + Math.round(sprite.width / 2), this.camera.translateY(sprite.y) + Math.round(sprite.height / 2));
-            this.ctx.rotate(sprite.rotation);
-            const img = document.getElementById(sprite.srcImage);
-            this.ctx.drawImage(img, -Math.round(sprite.width / 2), -Math.round(sprite.height / 2), sprite.width, sprite.height);
-            this.ctx.restore();
+
+    /*
+        renderSpriteOriginal(sprite) {
+            if (sprite.rotation) {
+                this.ctx.save();
+                this.ctx.translate(this.camera.translateX(sprite.x) + Math.round(sprite.width / 2), this.camera.translateY(sprite.y) + Math.round(sprite.height / 2));
+                this.ctx.rotate(sprite.rotation);
+                const img = document.getElementById(sprite.srcImage);
+                this.ctx.drawImage(img, -Math.round(sprite.width / 2), -Math.round(sprite.height / 2), sprite.width, sprite.height);
+                this.ctx.restore();
+            } else if (sprite.srcImage === "") {
+                this.ctx.fillStyle = "white";
+                let hitbox;
+                for (hitbox of sprite.hitboxes) {
+                    this.ctx.fillRect(this.camera.translateX(sprite.x + hitbox.xOffset), this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.width, hitbox.height);
+                }
+            } else {
+                const img = document.getElementById(sprite.srcImage);
+                this.ctx.drawImage(img, this.camera.translateX(sprite.x), this.camera.translateY(sprite.y), sprite.width, sprite.height);
+            }
+
         }
-        else if (sprite.srcImage == "") {
+    */
+    renderSprite(sprite) {
+        if (sprite.srcImage !== "") {
+            this.ctx.save();
+            this.ctx.translate(this.camera.translateX(sprite.x) + sprite.xOrigin, this.camera.translateY(sprite.y) + sprite.yOrigin);
+
+            if (sprite.rotation !== 0) {
+                this.ctx.rotate(sprite.rotation);
+            }
+
+            this.ctx.translate(-sprite.xOrigin, -sprite.yOrigin);
+
+            const img = document.getElementById(sprite.srcImage);
+            this.ctx.drawImage(img, sprite.dx, sprite.dy, sprite.width, sprite.height);
+            this.ctx.restore();
+
+        } else {
             this.ctx.fillStyle = "white";
             let hitbox;
             for (hitbox of sprite.hitboxes) {
                 this.ctx.fillRect(this.camera.translateX(sprite.x + hitbox.xOffset), this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.width, hitbox.height);
             }
         }
-        else {
-            const img = document.getElementById(sprite.srcImage);
-            this.ctx.drawImage(img, this.camera.translateX(sprite.x), this.camera.translateY(sprite.y), sprite.width, sprite.height);
-        }
-
     }
 
     drawOtherSprites() {
@@ -117,7 +145,7 @@ class Renderer {
      * Past this point, the rest of the code in this class is for rendering debug visuals. 
      * It is hideous, inefficient, and unreadable.
      * Proceed with caution
-    */
+     */
 
 
     renderDebugInfo() {
@@ -161,6 +189,10 @@ class Renderer {
             let hitbox = playerHitboxes[i];
             this.ctx.strokeRect(this.camera.translateX(this.level.player.x + hitbox.xOffset), this.camera.translateY(this.level.player.y + hitbox.yOffset), hitbox.width, hitbox.height);
         }
+
+        this.ctx.fillStyle = 'red';
+        this.ctx.fillRect(this.camera.translateX(this.level.player.arm.x), this.camera.translateY(this.level.player.arm.y), 12, 12);
+
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = "black";
     }
@@ -223,8 +255,7 @@ class Renderer {
 toggleDebug = function () {
     if (DEBUG) {
         DEBUG = false
-    }
-    else {
+    } else {
         DEBUG = true;
     }
 }

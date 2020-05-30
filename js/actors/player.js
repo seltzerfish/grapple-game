@@ -9,12 +9,13 @@ class Player extends Actor {
         this.controller = controller;
         this.grapple = null;
         this.animationFrameDuration = 20;
-        this.animationFrames = ['playerSprite']
+        this.animationFrames = ['playerSprite'];
         this.grappleStrengthX = 0.6;
         this.grappleStrengthY = 0.7;
         this.grappleLength = 650;
         this.accelerationCap = 1.5;
         this.extraPullStrength = 0.2;
+        this.arm = new Arm(this, this.controller);
     }
 
     act() {
@@ -29,6 +30,7 @@ class Player extends Actor {
         this.updateVelocity();
         this.updatePosition();
         this.handleCollisionsWithSolids(this.isSwinging());
+        this.arm.act();
         this.detectFallOutOfWorld();
     }
 
@@ -90,8 +92,27 @@ class Player extends Actor {
 
     animate() {
         if (!this.grapple && Math.round(this.getVelocity()) === 0) {
+            if (this.srcImage == 'playerSpriteGrappled') {
+                this.srcImage = 'playerSprite';
+                this.arm.srcImage = 'armOpen';
+                //this.arm.xOffset = 5;
+            } else if (this.srcImage == 'playerSpriteGrappledMirrored') {
+                this.srcImage = 'playerSpriteMirrored';
+                this.arm.srcImage = 'armOpen';
+                //this.arm.xOffset = 25;
+            }
             this.rotation *= 0.8;
             super.animate();
+        } else {
+            if (Math.round(this.xVelocity) < 0) {
+                this.srcImage = "playerSpriteGrappledMirrored";
+                //this.arm.xOffset = 25;
+                this.arm.srcImage = 'armClose';
+            } else {
+                this.srcImage = "playerSpriteGrappled";
+                // this.arm.xOffset = 5;
+                this.arm.srcImage = 'armClose';
+            }
         }
     }
 
@@ -108,5 +129,6 @@ class Player extends Actor {
         this.level = level;
         this.x = level.playerStartX;
         this.y = level.playerStartY;
+
     }
 }

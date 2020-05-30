@@ -10,24 +10,27 @@ class Grapple extends Actor {
     constructor(player, targetX, targetY, length) {
         super(player.getCenterX(), player.getCenterY(), 48, 40, "claw");
         this.hitboxes = [new Hitbox(this, Math.round(this.width / 2) - 10, Math.round(this.height / 2) - 10, 20, 20)];
-        this.x -= this.width / 2;
-        this.y -= this.height / 2;
         this.player = player;
         this.state = GrappleState.EXTENDING;
         this.length = length;
         this.extendSpeedFactor = 0.07;
         this.returnAcceleration = 2;
         this.returningSpeed = 0;
+
+        this.xOrigin = Math.round(48 / 2);
+        this.yOrigin = Math.round(40 / 2);
+
+
         this.calculateEndpoint(targetX, targetY);
         this.rotation = this.calculateRotation();
         this.calculateWirePositionOffsets();
+
     }
 
     act() {
         if (!this.player.controller.mouseDown && (this.state === GrappleState.EXTENDING || this.state === GrappleState.ATTACHED)) {
             this.return();
-        }
-        else if (this.state === GrappleState.RETURNING) {
+        } else if (this.state === GrappleState.RETURNING) {
             this.returnToPlayer();
         }
         // check for collisions to attach to
@@ -49,13 +52,13 @@ class Grapple extends Actor {
         const diffX = targetX - this.getCenterX();
         const diffY = targetY - this.getCenterY();
         const mag = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
-        this.endX = Math.round(this.x + ((diffX / mag) * this.length));
-        this.endY = Math.round(this.y + ((diffY / mag) * this.length));
+        this.endX = Math.round(this.player.arm.x + ((diffX / mag) * this.length));
+        this.endY = Math.round(this.player.arm.y + ((diffY / mag) * this.length));
     }
 
     attach() {
         this.state = GrappleState.ATTACHED;
-        this.player.srcImage = "playerSpriteGrappled";
+        //this.player.srcImage = "playerSpriteGrappled";
     }
 
     extend() {
@@ -64,49 +67,44 @@ class Grapple extends Actor {
         const mag = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
         if (mag < 60) {
             this.return();
-        }
-        else {
+        } else {
             this.xVelocity = this.extendSpeedFactor * diffX;
             this.yVelocity = this.extendSpeedFactor * diffY;
             this.updatePosition();
         }
     }
 
-    return() {
+    return () {
         this.state = GrappleState.RETURNING;
-        this.player.srcImage = "playerSprite";
+        //this.player.srcImage = "playerSprite";
     }
 
     /**
      * Takes the arctan of the difference between two vectors.
      * Returns an angle from two vectors in radians
-     * Shifted by PI/2 because of the starting place of the image.
      * The image was saved upright. Starting from 0 radians would cause it to rotate incorrectly
      * This is only called once during the instantiation of the grapple.
-    */
-    calculateRotation() { 
+     */
+    calculateRotation() {
         return Math.atan2(this.y - this.endY, this.x - this.endX);
     }
-    
+
     returnToPlayer() {
         const diffX = this.player.getCenterX() - this.getCenterX();
         const diffY = this.player.getCenterY() - this.getCenterY();
         const mag = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
         if (mag < 30) {
             this.state = GrappleState.RETURNED;
-        }
-        else {
+        } else {
             this.returningSpeed += this.returnAcceleration;
             if (Math.abs((diffX / mag) * this.returningSpeed) < Math.abs(diffX)) {
                 this.x += Math.round((diffX / mag) * this.returningSpeed);
-            }
-            else {
+            } else {
                 this.x += Math.round(diffX);
             }
             if (Math.abs((diffY / mag) * this.returningSpeed) < Math.abs(diffY)) {
                 this.y += Math.round((diffY / mag) * this.returningSpeed);
-            }
-            else {
+            } else {
                 this.y += Math.round(diffY);
             }
         }
@@ -117,7 +115,6 @@ class Grapple extends Actor {
         const originY = this.getCenterY();
         this.wireOffsetY = Math.round(Math.sin(this.rotation) * (this.width / 2));
         this.wireOffsetX = Math.round(Math.cos(this.rotation) * (this.width / 2));
-
     }
 
     /**
@@ -134,4 +131,3 @@ class Grapple extends Actor {
         return this.getCenterY() + this.wireOffsetY;
     }
 }
-
