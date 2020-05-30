@@ -32,11 +32,9 @@ class Level {
 
     update() {
         this.handleControllerInput();
-        this.player.act();
-        this.player.animate();
         this.camera.updatePosition();
         this.background.update(this.camera);
-
+        
         let actor;
         for (actor of this.actors) {
             actor.act();

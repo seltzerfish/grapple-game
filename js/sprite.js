@@ -14,6 +14,12 @@ class Sprite {
         this.frictionCoefficient = frictionCoefficient;
         this.minTranslationX = 0;
         this.minTranslationY = 0;
+        this.rotation = 0;
+        this.placeholder = true;
+        this.dx = 0;
+        this.dy = 0;
+        this.xOrigin = 0;
+        this.yOrigin = 0;
         this.hitboxes = [new Hitbox(this, 0, 0, width, height)]; // default hitbox is the sprite image boundary
     }
 
