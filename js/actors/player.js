@@ -40,6 +40,7 @@ class Player extends Actor {
                 this.level.camera.translateInputY(this.controller.mouseDownY), this.grappleLength);
             this.grapple.level = this.level;
             this.level.actors.push(this.grapple);
+            this.arm.openHand();
         }
     }
 
@@ -48,9 +49,10 @@ class Player extends Actor {
         if (state === GrappleState.RETURNED) {
             this.grapple = null;
             this.level.actors.pop(); // TODO: make this less hacky
+            this.arm.closeHand();
         }
         if (state === GrappleState.ATTACHED) {
-            const grappleLength = this.getGrappleLength();
+            const grappleLength = Math.max(this.getGrappleLength(), 1);
             this.xAcceleration += ((this.grapple.getWirePositionX() - this.getCenterX()) / grappleLength) * this.grappleStrengthX;
             this.yAcceleration += ((this.grapple.getWirePositionY() - this.getCenterY()) / grappleLength) * this.grappleStrengthY;
 
@@ -74,7 +76,7 @@ class Player extends Actor {
     }
 
     getGrappleLength() {
-        return Math.sqrt(Math.pow(this.grapple.getWirePositionX() - this.getCenterX(), 2) + Math.pow(this.grapple.getWirePositionY() - this.getCenterY(), 2));
+        return MathUtil.distanceBetween(this.grapple.getWirePositionX(), this.grapple.getWirePositionY(), this.getCenterX(), this.getCenterY());
     }
 
     isSwinging() {
@@ -91,29 +93,25 @@ class Player extends Actor {
     }
 
     animate() {
-        if (!this.grapple && Math.round(this.getVelocity()) === 0) {
-            if (this.srcImage == 'playerSpriteGrappled') {
-                this.srcImage = 'playerSprite';
-                this.arm.srcImage = 'armOpen';
-                //this.arm.xOffset = 5;
-            } else if (this.srcImage == 'playerSpriteGrappledMirrored') {
-                this.srcImage = 'playerSpriteMirrored';
-                this.arm.srcImage = 'armOpen';
-                //this.arm.xOffset = 25;
-            }
-            this.rotation *= 0.8;
-            super.animate();
-        } else {
-            if (Math.round(this.xVelocity) < 0) {
+        if (this.isMovingLeft()) {
+            this.arm.pinToRightSide();
+            if (this.isSwinging()) {
                 this.srcImage = "playerSpriteGrappledMirrored";
-                //this.arm.xOffset = 25;
-                this.arm.srcImage = 'armClose';
-            } else {
-                this.srcImage = "playerSpriteGrappled";
-                // this.arm.xOffset = 5;
-                this.arm.srcImage = 'armClose';
+            }
+            else {
+                this.srcImage = "playerSpriteMirrored";
             }
         }
+        else if (this.isMovingRight()) {
+            this.arm.pinToLeftSide();
+            if (this.isSwinging()) {
+                this.srcImage = "playerSpriteGrappled";
+            }
+            else {
+                this.srcImage = "playerSprite";
+            }
+        }
+        super.animate();
     }
 
     detectFallOutOfWorld() {

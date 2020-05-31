@@ -3,31 +3,61 @@
  */
 class Arm extends Actor {
 
-    constructor(player, x = 0, y = 300, w = 20 * 0.8, h = 36 * 0.8) {
-        super(x, y, w, h, "armOpen");
-        this.hitboxes = [new Hitbox(this, 0, 0, this.width - 4, this.height - 4)];
-        this.animationFrameDuration = 20;
-        this.animationFrames = ['armOpen'];
+    constructor(player, controller, x = 0, y = 300, w = 20, h = 36) {
+        super(x, y, w, h, "armClosed");
+        this.hitboxes = [];
         this.player = player;
-        this.flipped = false;
-        this.xOffset = 4;
-        this.yOffset = 28;
-        this.rotation = 0;
-        this.xOrigin = 10 * 0.8;
-        this.yOrigin = 2;
-
+        this.controller = controller;
+        this.pinToLeftSide();
+        this.playerOffsetY = Math.round(this.player.height * 0.4);
+        this.rotationOffsetX = Math.round(this.width / 2);
+        this.rotationOffsetY = Math.round(this.height * 0.1);
+        this.distanceFromShoulderToHand = Math.round(this.height * 0.7);
     }
 
     act() {
-        this.x = this.player.x + this.xOffset;
-        this.y = this.player.y + this.yOffset;
-        this.rotation = calculateRotation(this.y - this.player.level.camera.translateInputY(this.player.controller.mouse.y),
-            this.x - this.player.level.camera.translateInputX(this.player.controller.mouse.x), Math.PI / 2);
-        this.updatePosition();
+        this.x = this.player.x + this.playerOffsetX;
+        this.y = this.player.y + this.playerOffsetY;
+        if (this.player.grapple) {
+            this.pointTowards(this.player.grapple.getCenterX(), this.player.grapple.getCenterY());
+        }
+        else {
+            this.pointTowards(this.player.level.camera.translateInputX(this.controller.mouse.x),
+                this.player.level.camera.translateInputY(this.controller.mouse.y));
+        }
     }
 
-    animate() {
-        super.animate();
+    openHand() {
+        this.srcImage = "armOpen";
+    }
+
+    closeHand() {
+        this.srcImage = "armClosed";
+    }
+
+    /**
+     * Get the position at which the grapple should spawn, and where the line should be drawn
+     */
+    getHandPositionX() {
+        return this.getPointOfRotationX() + (Math.cos(this.rotation + Math.PI / 2) * this.distanceFromShoulderToHand);
+
+    }
+
+    getHandPositionY() {
+        return this.getPointOfRotationY() + (Math.sin(this.rotation + Math.PI / 2) * this.distanceFromShoulderToHand);
+    }
+
+    pointTowards(x, y) {
+        this.rotation = MathUtil.calculateTheta(this.getPointOfRotationY() - y,
+            this.getPointOfRotationX() - x) + Math.PI / 2;
+    }
+
+    pinToRightSide() {
+        this.playerOffsetX = this.player.width * 0.5;
+    }
+
+    pinToLeftSide() {
+        this.playerOffsetX = Math.round(this.player.width * 0.05);
     }
 
 }
