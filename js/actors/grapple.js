@@ -84,15 +84,12 @@ class Grapple extends Actor {
         const diffY = this.player.arm.getHandPositionY() - this.getWirePositionY();
         const mag = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
         this.returningSpeed *= this.returnAcceleration;
-        if (Math.abs((diffX / mag) * this.returningSpeed) < Math.abs(diffX)) {
+        if (this.returningSpeed < mag) {
             this.x += Math.round((diffX / mag) * this.returningSpeed);
-        } else {
-            this.x += Math.round(diffX);
-            this.state = GrappleState.RETURNED;
-        }
-        if (Math.abs((diffY / mag) * this.returningSpeed) < Math.abs(diffY)) {
             this.y += Math.round((diffY / mag) * this.returningSpeed);
-        } else {
+        }
+        else {
+            this.x += Math.round(diffX);
             this.y += Math.round(diffY);
             this.state = GrappleState.RETURNED;
         }
