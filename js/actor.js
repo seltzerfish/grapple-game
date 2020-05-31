@@ -13,10 +13,9 @@ class Actor extends Sprite {
         this.animationTimer = 0;
         this.animationFrameDuration = 20;
         this.animationFrames = [srcImage];
-        this.level = null;
     }
 
-    act() {
+    act(level) {
         // Abstract method; do not fill in. This method should be overridden in child classes.
     }
 
@@ -75,9 +74,8 @@ class Actor extends Sprite {
         }
     }
 
-    handleCollisionsWithSolids(ignoreFriction = false) {
-        let solid;
-        for (solid of this.level.getPossibleSolidCollisions(this)) {
+    handleCollisionsWithSolids(level, ignoreFriction = false) {
+        for (let solid of level.getPossibleSolidCollisions(this)) {
             if (this.isCollidingWith(solid)) {
                 this.bounceOffSolid(solid);
                 if (!ignoreFriction) {

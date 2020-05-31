@@ -19,11 +19,6 @@ class Level {
         this.solids = solids;
         this.actors = actors;
 
-        let actor;
-        for (actor of this.actors) {
-            actor.level = this;
-        }
-
         // These values must be set after instantiation in main.js
         this.camera = null;
         this.player = null;
@@ -37,7 +32,7 @@ class Level {
         
         let actor;
         for (actor of this.actors) {
-            actor.act();
+            actor.act(this);
             actor.animate();
         }
     }

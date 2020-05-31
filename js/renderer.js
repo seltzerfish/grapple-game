@@ -60,7 +60,6 @@ class Renderer {
         if (this.level.player.grapple) {
             this.drawGrappleWire();
         }
-        this.renderSprite(this.level.player);
         this.renderSprite(this.level.player.arm);
     }
 
@@ -69,8 +68,8 @@ class Renderer {
         this.ctx.lineWidth = 4;
         this.ctx.strokeStyle = "#ced25c";
 
-        this.ctx.moveTo(this.camera.translateX(this.level.player.getCenterX()),
-            this.camera.translateY(this.level.player.getCenterY()));
+        this.ctx.moveTo(this.camera.translateX(this.level.player.arm.getHandPositionX()),
+            this.camera.translateY(this.level.player.arm.getHandPositionY()));
 
         this.ctx.lineTo(this.camera.translateX(this.level.player.grapple.getWirePositionX()),
             this.camera.translateY(this.level.player.grapple.getWirePositionY()));
@@ -78,56 +77,39 @@ class Renderer {
         this.ctx.stroke();
         this.ctx.strokeStyle = "black";
         this.ctx.lineWidth = 1;
-
-
     }
 
-
-    /*
-        renderSpriteOriginal(sprite) {
-            if (sprite.rotation) {
-                this.ctx.save();
-                this.ctx.translate(this.camera.translateX(sprite.x) + Math.round(sprite.width / 2), this.camera.translateY(sprite.y) + Math.round(sprite.height / 2));
-                this.ctx.rotate(sprite.rotation);
-                const img = document.getElementById(sprite.srcImage);
-                this.ctx.drawImage(img, -Math.round(sprite.width / 2), -Math.round(sprite.height / 2), sprite.width, sprite.height);
-                this.ctx.restore();
-            } else if (sprite.srcImage === "") {
-                this.ctx.fillStyle = "white";
-                let hitbox;
-                for (hitbox of sprite.hitboxes) {
-                    this.ctx.fillRect(this.camera.translateX(sprite.x + hitbox.xOffset), this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.width, hitbox.height);
-                }
-            } else {
-                const img = document.getElementById(sprite.srcImage);
-                this.ctx.drawImage(img, this.camera.translateX(sprite.x), this.camera.translateY(sprite.y), sprite.width, sprite.height);
-            }
-
-        }
-    */
     renderSprite(sprite) {
-        if (sprite.srcImage !== "") {
-            this.ctx.save();
-            this.ctx.translate(this.camera.translateX(sprite.x) + sprite.xOrigin, this.camera.translateY(sprite.y) + sprite.yOrigin);
 
-            if (sprite.rotation !== 0) {
-                this.ctx.rotate(sprite.rotation);
-            }
-
-            this.ctx.translate(-sprite.xOrigin, -sprite.yOrigin);
-
-            const img = document.getElementById(sprite.srcImage);
-            this.ctx.drawImage(img, sprite.dx, sprite.dy, sprite.width, sprite.height);
-            this.ctx.restore();
-
-        } else {
+        if (sprite.rotation) {
+            this.drawRotatedSprite(sprite);
+        } else if (sprite.srcImage === "") {
             this.ctx.fillStyle = "white";
             let hitbox;
             for (hitbox of sprite.hitboxes) {
                 this.ctx.fillRect(this.camera.translateX(sprite.x + hitbox.xOffset), this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.width, hitbox.height);
             }
+        } else {
+            const img = document.getElementById(sprite.srcImage);
+            this.ctx.drawImage(img, this.camera.translateX(sprite.x), this.camera.translateY(sprite.y), sprite.width, sprite.height);
         }
+
     }
+
+    /**
+     * Moves to the sprite's point of rotation (position plus rotationOffset),
+     * rotates the context by sprite.rotation, 
+     * then draws the sprite from the top left corner (point of rotation minus rotationOffset) 
+     */
+    drawRotatedSprite(sprite) {
+        const img = document.getElementById(sprite.srcImage);
+        this.ctx.save();
+        this.ctx.translate(this.camera.translateX(sprite.getPointOfRotationX()), this.camera.translateY(sprite.getPointOfRotationY()));
+        this.ctx.rotate(sprite.rotation);
+        this.ctx.drawImage(img, -Math.round(sprite.rotationOffsetX), -Math.round(sprite.rotationOffsetY), sprite.width, sprite.height);
+        this.ctx.restore();
+    }
+
 
     drawOtherSprites() {
         for (let i = 0; i < this.level.solids.length; i++) {
@@ -171,11 +153,6 @@ class Renderer {
                 this.ctx.strokeRect(this.camera.translateX(sprite.x + hitbox.xOffset), this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.width, hitbox.height);
             }
         }
-        let playerHitboxes = this.level.player.hitboxes;
-        for (let i = 0; i < playerHitboxes.length; i++) {
-            let hitbox = playerHitboxes[i];
-            this.ctx.strokeRect(this.camera.translateX(this.level.player.x + hitbox.xOffset), this.camera.translateY(this.level.player.y + hitbox.yOffset), hitbox.width, hitbox.height);
-        }
         sprites = this.level.actors;
         for (let i = 0; i < sprites.length; i++) {
             let sprite = sprites[i];
@@ -184,15 +161,6 @@ class Renderer {
                 this.ctx.strokeRect(this.camera.translateX(sprite.x + hitbox.xOffset), this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.width, hitbox.height);
             }
         }
-        playerHitboxes = this.level.player.hitboxes;
-        for (let i = 0; i < playerHitboxes.length; i++) {
-            let hitbox = playerHitboxes[i];
-            this.ctx.strokeRect(this.camera.translateX(this.level.player.x + hitbox.xOffset), this.camera.translateY(this.level.player.y + hitbox.yOffset), hitbox.width, hitbox.height);
-        }
-
-        this.ctx.fillStyle = 'red';
-        this.ctx.fillRect(this.camera.translateX(this.level.player.arm.x), this.camera.translateY(this.level.player.arm.y), 12, 12);
-
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = "black";
     }

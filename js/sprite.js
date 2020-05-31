@@ -14,12 +14,8 @@ class Sprite {
         this.frictionCoefficient = frictionCoefficient;
         this.minTranslationX = 0;
         this.minTranslationY = 0;
-        this.rotation = 0;
-        this.placeholder = true;
-        this.dx = 0;
-        this.dy = 0;
-        this.xOrigin = 0;
-        this.yOrigin = 0;
+        this.rotationOffsetX = Math.round(this.width / 2);  // default point of rotation is about the center.
+        this.rotationOffsetY = Math.round(this.height / 2);
         this.hitboxes = [new Hitbox(this, 0, 0, width, height)]; // default hitbox is the sprite image boundary
     }
 
@@ -52,5 +48,13 @@ class Sprite {
 
     getTranslationVectorMagnitude() {
         return Math.sqrt(Math.pow(this.minTranslationX, 2) + Math.pow(this.minTranslationY, 2));
+    }
+
+    getPointOfRotationX() {
+        return this.x + this.rotationOffsetX;
+    }
+
+    getPointOfRotationY() {
+        return this.y + this.rotationOffsetY;
     }
 }

@@ -15,42 +15,45 @@ class Player extends Actor {
         this.grappleLength = 650;
         this.accelerationCap = 1.5;
         this.extraPullStrength = 0.2;
+        this.turningThreshold = 2;
         this.arm = new Arm(this, this.controller);
     }
 
-    act() {
+    act(level) {
         this.xAcceleration = 0;
         this.yAcceleration = 0;
-        this.handleControllerInput();
+        this.handleControllerInput(level);
         if (this.grapple) {
-            this.handleGrappleMotion();
+            this.handleGrappleMotion(level);
         }
-        this.yAcceleration += this.level.gravity;
+        this.yAcceleration += level.gravity;
         this.capAcceleration();
         this.updateVelocity();
         this.updatePosition();
-        this.handleCollisionsWithSolids(this.isSwinging());
-        this.arm.act();
-        this.detectFallOutOfWorld();
+        this.handleCollisionsWithSolids(level, this.isSwinging());
+        this.arm.act(level);
+        this.detectFallOutOfWorld(level);
     }
 
-    handleControllerInput() {
+    handleControllerInput(level) {
         if (!this.grapple && this.controller.mouseDown) {
-            this.grapple = new Grapple(this, this.level.camera.translateInputX(this.controller.mouseDownX),
-                this.level.camera.translateInputY(this.controller.mouseDownY), this.grappleLength);
-            this.grapple.level = this.level;
-            this.level.actors.push(this.grapple);
+            this.grapple = new Grapple(this, level.camera.translateInputX(this.controller.mouseDownX),
+                level.camera.translateInputY(this.controller.mouseDownY), this.grappleLength);
+            this.grapple.level = level;
+            level.actors.push(this.grapple);
+            this.arm.openHand();
         }
     }
 
-    handleGrappleMotion() {
+    handleGrappleMotion(level) {
         const state = this.grapple.state;
         if (state === GrappleState.RETURNED) {
             this.grapple = null;
-            this.level.actors.pop(); // TODO: make this less hacky
+            level.actors.pop(); // TODO: make this less hacky
+            this.arm.closeHand();
         }
         if (state === GrappleState.ATTACHED) {
-            const grappleLength = this.getGrappleLength();
+            const grappleLength = Math.max(this.getGrappleLength(), 1);
             this.xAcceleration += ((this.grapple.getWirePositionX() - this.getCenterX()) / grappleLength) * this.grappleStrengthX;
             this.yAcceleration += ((this.grapple.getWirePositionY() - this.getCenterY()) / grappleLength) * this.grappleStrengthY;
 
@@ -74,7 +77,7 @@ class Player extends Actor {
     }
 
     getGrappleLength() {
-        return Math.sqrt(Math.pow(this.grapple.getWirePositionX() - this.getCenterX(), 2) + Math.pow(this.grapple.getWirePositionY() - this.getCenterY(), 2));
+        return MathUtil.distanceBetween(this.grapple.getWirePositionX(), this.grapple.getWirePositionY(), this.getCenterX(), this.getCenterY());
     }
 
     isSwinging() {
@@ -91,44 +94,34 @@ class Player extends Actor {
     }
 
     animate() {
-        if (!this.grapple && Math.round(this.getVelocity()) === 0) {
-            if (this.srcImage == 'playerSpriteGrappled') {
-                this.srcImage = 'playerSprite';
-                this.arm.srcImage = 'armOpen';
-                //this.arm.xOffset = 5;
-            } else if (this.srcImage == 'playerSpriteGrappledMirrored') {
-                this.srcImage = 'playerSpriteMirrored';
-                this.arm.srcImage = 'armOpen';
-                //this.arm.xOffset = 25;
-            }
-            this.rotation *= 0.8;
-            super.animate();
-        } else {
-            if (Math.round(this.xVelocity) < 0) {
+
+        if (this.xVelocity < -1 * this.turningThreshold) {
+            this.arm.pinToRightSide();
+            if (this.isSwinging()) {
                 this.srcImage = "playerSpriteGrappledMirrored";
-                //this.arm.xOffset = 25;
-                this.arm.srcImage = 'armClose';
-            } else {
-                this.srcImage = "playerSpriteGrappled";
-                // this.arm.xOffset = 5;
-                this.arm.srcImage = 'armClose';
+            }
+            else {
+                this.srcImage = "playerSpriteMirrored";
             }
         }
+        else if (this.xVelocity > this.turningThreshold) {
+            this.arm.pinToLeftSide();
+            if (this.isSwinging()) {
+                this.srcImage = "playerSpriteGrappled";
+            }
+            else {
+                this.srcImage = "playerSprite";
+            }
+        }
+        super.animate();
     }
 
-    detectFallOutOfWorld() {
-        if ((this.y + this.height) > this.level.height) {
-            this.x = this.level.playerStartX;
-            this.y = this.level.playerStartY;
+    detectFallOutOfWorld(level) {
+        if ((this.y + this.height) > level.height) {
+            this.x = level.playerStartX;
+            this.y = level.playerStartY;
             this.xVelocity = 0;
             this.yVelocity = 0;
         }
-    }
-
-    setLevel(level) {
-        this.level = level;
-        this.x = level.playerStartX;
-        this.y = level.playerStartY;
-
     }
 }
