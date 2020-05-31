@@ -18,11 +18,7 @@ class Level {
         this.gravity = gravity;
         this.solids = solids;
         this.actors = actors;
-
-        let actor;
-        for (actor of this.actors) {
-            actor.level = this;
-        }
+        this.spritesToBeDeleted = [];
 
         // These values must be set after instantiation in main.js
         this.camera = null;
@@ -31,13 +27,15 @@ class Level {
     }
 
     update() {
+        if (this.spritesToBeDeleted.length > 0) {
+            this.deleteSprites();
+        }
         this.handleControllerInput();
         this.camera.updatePosition();
         this.background.update(this.camera);
-        
-        let actor;
-        for (actor of this.actors) {
-            actor.act();
+
+        for (let actor of this.actors) {
+            actor.act(this);
             actor.animate();
         }
     }
@@ -62,5 +60,34 @@ class Level {
     getPossibleActorCollisions(actor) {
         // TODO: implement a grid system to make this smarter.
         return this.actors;
+    }
+
+    markSpriteForDeletion(sprite) {
+        this.spritesToBeDeleted.push(sprite)
+    }
+
+    deleteSprites() {
+        for (let sprite of this.spritesToBeDeleted) {
+            if (sprite instanceof Actor) {
+                this.removeActor(sprite);
+            }
+            else if (sprite instanceof Solid) {
+                this.removeSolid(sprite);
+            }
+        }
+    }
+
+    removeActor(actor) {
+        let index = this.actors.indexOf(actor);
+        if (index > -1) {
+            this.actors.splice(index, 1);
+        }
+    }
+
+    removeSolid(solid) {
+        let index = this.solids.indexOf(actor);
+        if (index > -1) {
+            this.solids.splice(index, 1);
+        }
     }
 }

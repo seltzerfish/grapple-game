@@ -4,7 +4,7 @@ class Camera {
         this.anchor = anchor;
         this.x = 0;
         this.y = 0;
-        this.followStrength = 0.0005;
+        this.followStrength = 0.001;
     }
 
     updatePosition() {

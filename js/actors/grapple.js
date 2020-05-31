@@ -16,16 +16,16 @@ class Grapple extends Actor {
         this.state = GrappleState.EXTENDING;
         this.length = length;
         this.extendSpeedFactor = 0.07;
-        this.returnAcceleration = 2;
-        this.returningSpeed = 0;
+        this.returnAcceleration = 1.15;
+        this.returningSpeed = 5;
         this.calculateEndpoint(targetX, targetY);
         this.rotation = this.calculateRotation();
         this.calculateWirePositionOffsets();
 
     }
 
-    act() {
-        if (!this.player.controller.mouseDown && (this.state === GrappleState.EXTENDING || this.state === GrappleState.ATTACHED)) {
+    act(level) {
+        if (!this.player.controller.leftClickDown && (this.state === GrappleState.EXTENDING || this.state === GrappleState.ATTACHED)) {
             this.return();
         } else if (this.state === GrappleState.RETURNING) {
             this.returnToPlayer();
@@ -33,7 +33,7 @@ class Grapple extends Actor {
         // check for collisions to attach to
         else if (this.state === GrappleState.EXTENDING) {
             let solid;
-            for (solid of this.level.getPossibleSolidCollisions()) {
+            for (solid of level.getPossibleSolidCollisions()) {
                 if (this.isCollidingWith(solid)) {
                     this.attach();
                 }
@@ -83,20 +83,17 @@ class Grapple extends Actor {
         const diffX = this.player.arm.getHandPositionX() - this.getWirePositionX();
         const diffY = this.player.arm.getHandPositionY() - this.getWirePositionY();
         const mag = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
-        this.returningSpeed += this.returnAcceleration;
-        if (Math.abs((diffX / mag) * this.returningSpeed) < Math.abs(diffX)) {
+        this.returningSpeed *= this.returnAcceleration;
+        if (this.returningSpeed < mag) {
             this.x += Math.round((diffX / mag) * this.returningSpeed);
-        } else {
-            this.x += Math.round(diffX);
-            this.state = GrappleState.RETURNED;
-        }
-        if (Math.abs((diffY / mag) * this.returningSpeed) < Math.abs(diffY)) {
             this.y += Math.round((diffY / mag) * this.returningSpeed);
-        } else {
+        }
+        else {
+            this.x += Math.round(diffX);
             this.y += Math.round(diffY);
             this.state = GrappleState.RETURNED;
         }
-        
+
     }
 
     calculateWirePositionOffsets() {
