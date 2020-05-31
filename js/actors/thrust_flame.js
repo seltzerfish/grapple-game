@@ -3,8 +3,8 @@ class ThrustFlame extends Actor {
     constructor(x, y, directionX, directionY) {
         super(x, y, 30, 30);
         this.timeAlive = 0;
-        this.speed = 10;
-        this.directionRandomness = 10;
+        this.speed = 7;
+        this.directionRandomness = 12;
         this.durationRandomness = 30;
         this.sizeRandomness = 30;
         this.width = this.addRandomOffset(this.width, this.sizeRandomness);

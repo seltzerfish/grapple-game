@@ -14,18 +14,21 @@ class Controller {
             x: 0,
             y: 0
         };
+        const img = document.getElementById("crosshair");
+        this.cursorOffsetX = Math.round(img.width / 2);
+        this.cursorOffsetY = Math.round(img.height / 2);
     }
 
     handleMouseDown(event) {
         if (event.button === 0) {
             this.leftClickDown = true;
-            this.leftClickDownX = event.offsetX;
-            this.leftClickDownY = event.offsetY;
+            this.leftClickDownX = event.offsetX + this.cursorOffsetX;
+            this.leftClickDownY = event.offsetY + this.cursorOffsetY;
         }
         else if (event.button === 2) {
             this.rightClickDown = true;
-            this.rightClickDownX = event.offsetX;
-            this.rightClickDownY = event.offsetY;
+            this.rightClickDownX = event.offsetX + this.cursorOffsetX;
+            this.rightClickDownY = event.offsetY + this.cursorOffsetY;
         }
     }
 
@@ -43,8 +46,8 @@ class Controller {
     }
 
     updateMousePos(event) {
-        this.mouse.x = event.offsetX;
-        this.mouse.y = event.offsetY;
+        this.mouse.x = event.offsetX + this.cursorOffsetX;
+        this.mouse.y = event.offsetY + this.cursorOffsetY;
     }
 
     preventRightClickMenu(event) {
