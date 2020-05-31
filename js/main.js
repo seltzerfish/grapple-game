@@ -13,8 +13,8 @@ class Game {
 
     // this.level.setDefaultValues();
     this.renderer = new Renderer(this.level, ctx, this.camera);
-    window.addEventListener("mousedown", (event) => this.controller.keyListener(event));
-    window.addEventListener("mouseup", (event) => this.controller.keyListener(event));
+    window.addEventListener("mousedown", (event) => this.controller.setMouseDown(event));
+    window.addEventListener("mouseup", (event) => this.controller.setMouseUp());
     window.addEventListener('mousemove', (event) => this.controller.updateMousePos(event));
   }
 

@@ -13,16 +13,16 @@ class Controller {
         };
     }
 
-    keyListener = function (event) {
-        if (event.type === "mousedown") {
-            this.mouseDown = true;
-            this.mouseDownX = event.offsetX;
-            this.mouseDownY = event.offsetY;
-        } else if (event.type === "mouseup") {
-            this.mouseDown = false;
-            this.mouseDownX = 0;
-            this.mouseDownY = 0;
-        } else {}
+    setMouseDown(event) {
+        this.mouseDown = true;
+        this.mouseDownX = event.offsetX;
+        this.mouseDownY = event.offsetY;
+    }
+
+    setMouseUp() {
+        this.mouseDown = false;
+        this.mouseDownX = 0;
+        this.mouseDownY = 0;
     }
 
     updateMousePos(event) {
