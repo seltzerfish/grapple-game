@@ -39,12 +39,12 @@ class Arm extends Actor {
      * Get the position at which the grapple should spawn, and where the line should be drawn
      */
     getHandPositionX() {
-        return this.getPointOfRotationX() + (Math.cos(this.rotation + Math.PI / 2) * this.distanceFromShoulderToHand);
+        return Math.round(this.getPointOfRotationX() + (Math.cos(this.rotation + Math.PI / 2) * this.distanceFromShoulderToHand));
 
     }
 
     getHandPositionY() {
-        return this.getPointOfRotationY() + (Math.sin(this.rotation + Math.PI / 2) * this.distanceFromShoulderToHand);
+        return Math.round(this.getPointOfRotationY() + (Math.sin(this.rotation + Math.PI / 2) * this.distanceFromShoulderToHand));
     }
 
     pointTowards(x, y) {

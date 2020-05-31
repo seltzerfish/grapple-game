@@ -4,29 +4,50 @@
 class Controller {
 
     constructor() {
-        this.mouseDown = false;
-        this.mouseDownX = 0;
-        this.mouseDownY = 0;
+        this.leftClickDown = false;
+        this.leftClickDownX = 0;
+        this.leftClickDownY = 0;
+        this.rightClickDown = false;
+        this.rightClickDownX = 0;
+        this.rightClickDownY = 0;
         this.mouse = {
             x: 0,
             y: 0
         };
     }
 
-    setMouseDown(event) {
-        this.mouseDown = true;
-        this.mouseDownX = event.offsetX;
-        this.mouseDownY = event.offsetY;
+    handleMouseDown(event) {
+        if (event.button === 0) {
+            this.leftClickDown = true;
+            this.leftClickDownX = event.offsetX;
+            this.leftClickDownY = event.offsetY;
+        }
+        else if (event.button === 2) {
+            this.rightClickDown = true;
+            this.rightClickDownX = event.offsetX;
+            this.rightClickDownY = event.offsetY;
+        }
     }
 
-    setMouseUp() {
-        this.mouseDown = false;
-        this.mouseDownX = 0;
-        this.mouseDownY = 0;
+    handleMouseUp(event) {
+        if (event.button === 0) {
+            this.leftClickDown = false;
+            this.leftClickDownX = 0;
+            this.leftClickDownY = 0;
+        }
+        else if (event.button === 2) {
+            this.rightClickDown = false;
+            this.rightClickDownX = 0;
+            this.rightClickDownY = 0;
+        }
     }
 
     updateMousePos(event) {
         this.mouse.x = event.offsetX;
         this.mouse.y = event.offsetY;
+    }
+
+    preventRightClickMenu(event) {
+        event.preventDefault();
     }
 }

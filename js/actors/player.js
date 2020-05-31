@@ -16,6 +16,9 @@ class Player extends Actor {
         this.accelerationCap = 1.5;
         this.extraPullStrength = 0.2;
         this.turningThreshold = 2;
+        this.thrustCharges = 10000; // TODO: reduce to a reasonable number and add refill logic.
+        this.readyToThrust = true;
+        this.thrustPower = 10;
         this.arm = new Arm(this, this.controller);
     }
 
@@ -36,20 +39,31 @@ class Player extends Actor {
     }
 
     handleControllerInput(level) {
-        if (!this.grapple && this.controller.mouseDown) {
-            this.grapple = new Grapple(this, level.camera.translateInputX(this.controller.mouseDownX),
-                level.camera.translateInputY(this.controller.mouseDownY), this.grappleLength);
-            this.grapple.level = level;
-            level.actors.push(this.grapple);
-            this.arm.openHand();
+        if (!this.grapple) {
+            if (this.controller.leftClickDown) {
+                this.grapple = new Grapple(this, level.camera.translateInputX(this.controller.leftClickDownX),
+                    level.camera.translateInputY(this.controller.leftClickDownY), this.grappleLength);
+                this.grapple.level = level;
+                level.actors.push(this.grapple);
+                this.arm.openHand();
+            }
+            else if (this.controller.rightClickDown && this.readyToThrust && this.thrustCharges > 0) {
+                this.readyToThrust = false;
+                this.thrustCharges -= 1;
+                this.thrust(level.camera.translateInputX(this.controller.rightClickDownX),
+                    level.camera.translateInputY(this.controller.rightClickDownY), level);
+            }
+            else if (!this.readyToThrust && !this.controller.rightClickDown) {
+                this.readyToThrust = true;
+            }
         }
     }
 
     handleGrappleMotion(level) {
         const state = this.grapple.state;
         if (state === GrappleState.RETURNED) {
+            level.markSpriteForDeletion(this.grapple);
             this.grapple = null;
-            level.actors.pop(); // TODO: make this less hacky
             this.arm.closeHand();
         }
         if (state === GrappleState.ATTACHED) {
@@ -122,6 +136,19 @@ class Player extends Actor {
             this.y = level.playerStartY;
             this.xVelocity = 0;
             this.yVelocity = 0;
+        }
+    }
+
+    thrust(x, y, level) {
+        const mag = MathUtil.distanceBetween(this.getCenterX(), this.getCenterY(), x, y);
+        const thrustDirectionX = (this.getCenterX() - x) / mag;
+        const thrustDirectionY = (this.getCenterY() - y) / mag;
+        this.xVelocity += thrustDirectionX * this.thrustPower;
+        this.yVelocity += thrustDirectionY * this.thrustPower;
+
+        const numFlames = MathUtil.getRandomInt(3);
+        for (let i = 0; i < numFlames + 3; i++) {
+            level.actors.push(new ThrustFlame(this.arm.getHandPositionX(), this.arm.getHandPositionY(), -thrustDirectionX, -thrustDirectionY));
         }
     }
 }
