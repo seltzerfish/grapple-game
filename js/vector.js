@@ -1,50 +1,44 @@
+/*
+    when working w/the vector operations they can
+    accept either one two arguments.
+    if argument.length === 0 then v is expected to be a vector object.
+    if argument.length === 1 then v and y are expected to be numerical values.
+*/
 class Vector {
 
-    constructor(x, y) {
-        if (arguments.length === 0) {
-            this.x = 0;
-            this.y = 0;
-        } else {
-            this.x = x;
-            this.y = y;
-        }
+    constructor(x = 0, y = 0) {
+        this.x = x;
+        this.y = y;
     }
 
     add(v, y) {
         if (arguments.length === 1) {
-            this.x += v.x;
-            this.y += v.y;
+            return new Vector(this.x + v.x, this.y + v.y);
         } else {
-
-            this.x = this.x + v;
-            this.y = this.y + y;
+            return new Vector(this.x + y, this.y + y);
         }
     }
 
     subtract(v, y) {
         if (arguments.length === 1) {
-            this.x -= v.x;
-            this.y -= v.y;
+            return new Vector(this.x - v.x, this.y - v.y);
         } else {
-            this.x -= v;
-            this.y -= y;
+            return new Vector(this.x - v, this.y - y);
         }
     }
 
-    multiply(s) {
-        this.x *= s;
-        this.y *= s;
+    multiply(scalar) {
+        return new Vector(this.x * scalar, this.y * scalar);
     }
 
-    divide(s) {
-        if (s === 0) {
+    divide(scalar) {
+        if (scalar === 0) {
             return;
         }
-        this.x /= s;
-        this.y /= s;
+        return new Vector(this.x / scalar, this.y / scalar);
     }
 
-    mag() {
+    getMag() {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
@@ -54,7 +48,7 @@ class Vector {
         }
     }
 
-    dot(v, y) {
+    getDot(v, y) {
         if (arguments.length === 1) {
             return this.x * v + this.y * y;
         }
