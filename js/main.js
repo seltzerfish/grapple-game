@@ -20,10 +20,11 @@ class Game {
 
   setupLevel(level) {
     this.level = level;
-    this.player.setLevel(this.level);
     this.level.camera = this.camera;
     this.level.controller = this.controller;
     this.level.player = this.player;
+    this.player.x = this.level.playerStartX;
+    this.player.y = this.level.playerStartY;
     this.level.actors.push(this.player);
   }
 }

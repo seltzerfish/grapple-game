@@ -19,37 +19,37 @@ class Player extends Actor {
         this.arm = new Arm(this, this.controller);
     }
 
-    act() {
+    act(level) {
         this.xAcceleration = 0;
         this.yAcceleration = 0;
-        this.handleControllerInput();
+        this.handleControllerInput(level);
         if (this.grapple) {
-            this.handleGrappleMotion();
+            this.handleGrappleMotion(level);
         }
-        this.yAcceleration += this.level.gravity;
+        this.yAcceleration += level.gravity;
         this.capAcceleration();
         this.updateVelocity();
         this.updatePosition();
-        this.handleCollisionsWithSolids(this.isSwinging());
-        this.arm.act();
-        this.detectFallOutOfWorld();
+        this.handleCollisionsWithSolids(level, this.isSwinging());
+        this.arm.act(level);
+        this.detectFallOutOfWorld(level);
     }
 
-    handleControllerInput() {
+    handleControllerInput(level) {
         if (!this.grapple && this.controller.mouseDown) {
-            this.grapple = new Grapple(this, this.level.camera.translateInputX(this.controller.mouseDownX),
-                this.level.camera.translateInputY(this.controller.mouseDownY), this.grappleLength);
-            this.grapple.level = this.level;
-            this.level.actors.push(this.grapple);
+            this.grapple = new Grapple(this, level.camera.translateInputX(this.controller.mouseDownX),
+                level.camera.translateInputY(this.controller.mouseDownY), this.grappleLength);
+            this.grapple.level = level;
+            level.actors.push(this.grapple);
             this.arm.openHand();
         }
     }
 
-    handleGrappleMotion() {
+    handleGrappleMotion(level) {
         const state = this.grapple.state;
         if (state === GrappleState.RETURNED) {
             this.grapple = null;
-            this.level.actors.pop(); // TODO: make this less hacky
+            level.actors.pop(); // TODO: make this less hacky
             this.arm.closeHand();
         }
         if (state === GrappleState.ATTACHED) {
@@ -116,19 +116,12 @@ class Player extends Actor {
         super.animate();
     }
 
-    detectFallOutOfWorld() {
-        if ((this.y + this.height) > this.level.height) {
-            this.x = this.level.playerStartX;
-            this.y = this.level.playerStartY;
+    detectFallOutOfWorld(level) {
+        if ((this.y + this.height) > level.height) {
+            this.x = level.playerStartX;
+            this.y = level.playerStartY;
             this.xVelocity = 0;
             this.yVelocity = 0;
         }
-    }
-
-    setLevel(level) {
-        this.level = level;
-        this.x = level.playerStartX;
-        this.y = level.playerStartY;
-
     }
 }

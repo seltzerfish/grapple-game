@@ -24,7 +24,7 @@ class Grapple extends Actor {
 
     }
 
-    act() {
+    act(level) {
         if (!this.player.controller.mouseDown && (this.state === GrappleState.EXTENDING || this.state === GrappleState.ATTACHED)) {
             this.return();
         } else if (this.state === GrappleState.RETURNING) {
@@ -33,7 +33,7 @@ class Grapple extends Actor {
         // check for collisions to attach to
         else if (this.state === GrappleState.EXTENDING) {
             let solid;
-            for (solid of this.level.getPossibleSolidCollisions()) {
+            for (solid of level.getPossibleSolidCollisions()) {
                 if (this.isCollidingWith(solid)) {
                     this.attach();
                 }
@@ -96,7 +96,7 @@ class Grapple extends Actor {
             this.y += Math.round(diffY);
             this.state = GrappleState.RETURNED;
         }
-        
+
     }
 
     calculateWirePositionOffsets() {

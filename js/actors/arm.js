@@ -15,15 +15,15 @@ class Arm extends Actor {
         this.distanceFromShoulderToHand = Math.round(this.height * 0.7);
     }
 
-    act() {
+    act(level) {
         this.x = this.player.x + this.playerOffsetX;
         this.y = this.player.y + this.playerOffsetY;
         if (this.player.grapple) {
             this.pointTowards(this.player.grapple.getCenterX(), this.player.grapple.getCenterY());
         }
         else {
-            this.pointTowards(this.player.level.camera.translateInputX(this.controller.mouse.x),
-                this.player.level.camera.translateInputY(this.controller.mouse.y));
+            this.pointTowards(level.camera.translateInputX(this.controller.mouse.x),
+                level.camera.translateInputY(this.controller.mouse.y));
         }
     }
 
