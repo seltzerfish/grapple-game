@@ -15,6 +15,7 @@ class Player extends Actor {
         this.grappleLength = 650;
         this.accelerationCap = 1.5;
         this.extraPullStrength = 0.2;
+        this.turningThreshold = 2;
         this.arm = new Arm(this, this.controller);
     }
 
@@ -93,7 +94,8 @@ class Player extends Actor {
     }
 
     animate() {
-        if (this.isMovingLeft()) {
+
+        if (this.xVelocity < -1 * this.turningThreshold) {
             this.arm.pinToRightSide();
             if (this.isSwinging()) {
                 this.srcImage = "playerSpriteGrappledMirrored";
@@ -102,7 +104,7 @@ class Player extends Actor {
                 this.srcImage = "playerSpriteMirrored";
             }
         }
-        else if (this.isMovingRight()) {
+        else if (this.xVelocity > this.turningThreshold) {
             this.arm.pinToLeftSide();
             if (this.isSwinging()) {
                 this.srcImage = "playerSpriteGrappled";
