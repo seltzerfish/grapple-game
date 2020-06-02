@@ -53,12 +53,12 @@ class Actor extends Sprite {
         return this.yVelocity > 0;
     }
 
-    isMovingLeft() {
-        return this.xVelocity < 0;
+    isMovingLeft(speed=0) {
+        return this.xVelocity < speed;
     }
 
-    isMovingRight() {
-        return this.xVelocity > 0;
+    isMovingRight(speed=0) {
+        return this.xVelocity > speed;
     }
 
     // rotates between images in this.animationFrames after this.animationFrameDuration milliseconds.

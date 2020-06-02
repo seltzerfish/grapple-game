@@ -3,9 +3,9 @@
  */
 class Player extends Actor {
 
-    constructor(controller, x = 0, y = 300, w = 42, h = 66) {
+    constructor(controller, x = 0, y = 300, w = 36, h = 56) {
         super(x, y, w, h, "playerSprite");
-        this.hitboxes = [new Hitbox(this, 0, 0, this.width - 4, this.height - 4)];
+        this.hitboxes = [new Hitbox(this, 0, 0, this.width - 6, this.height - 4)];
         this.controller = controller;
         this.grapple = null;
         this.animationFrameDuration = 20;
@@ -19,6 +19,8 @@ class Player extends Actor {
         this.thrustCharges = 10000; // TODO: reduce to a reasonable number and add refill logic.
         this.readyToThrust = true;
         this.thrustPower = 10;
+        this.movingLeft = false;
+        this.movingRight = false;
         this.arm = new Arm(this, this.controller);
     }
 
@@ -108,9 +110,8 @@ class Player extends Actor {
     }
 
     animate() {
-
-        if (this.xVelocity < -1 * this.turningThreshold) {
-            this.arm.pinToRightSide();
+        this.updateDirection();
+        if (this.movingLeft) {
             if (this.isSwinging()) {
                 this.srcImage = "playerSpriteGrappledMirrored";
             }
@@ -118,8 +119,7 @@ class Player extends Actor {
                 this.srcImage = "playerSpriteMirrored";
             }
         }
-        else if (this.xVelocity > this.turningThreshold) {
-            this.arm.pinToLeftSide();
+        else {
             if (this.isSwinging()) {
                 this.srcImage = "playerSpriteGrappled";
             }
@@ -128,6 +128,17 @@ class Player extends Actor {
             }
         }
         super.animate();
+    }
+
+    updateDirection() {
+        if (this.isMovingLeft(-this.turningThreshold)) {
+            this.movingLeft = true;
+            this.movingRight = false;
+        }
+        else if (this.isMovingRight(this.turningThreshold)) {
+            this.movingRight = true;
+            this.movingLeft = false;
+        }
     }
 
     detectFallOutOfWorld(level) {

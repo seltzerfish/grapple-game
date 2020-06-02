@@ -3,12 +3,12 @@
  */
 class Arm extends Actor {
 
-    constructor(player, controller, x = 0, y = 300, w = 20, h = 36) {
+    constructor(player, controller, x = 0, y = 300, w = 12, h = 24) {
         super(x, y, w, h, "armClosed");
         this.hitboxes = [];
         this.player = player;
         this.controller = controller;
-        this.pinToLeftSide();
+        this.playerOffsetX = Math.round(this.player.width * 0.05);
         this.playerOffsetY = Math.round(this.player.height * 0.4);
         this.rotationOffsetX = Math.round(this.width / 2);
         this.rotationOffsetY = Math.round(this.height * 0.1);
@@ -52,12 +52,5 @@ class Arm extends Actor {
             this.getPointOfRotationX() - x) + Math.PI / 2;
     }
 
-    pinToRightSide() {
-        this.playerOffsetX = this.player.width * 0.5;
-    }
-
-    pinToLeftSide() {
-        this.playerOffsetX = Math.round(this.player.width * 0.05);
-    }
 
 }
