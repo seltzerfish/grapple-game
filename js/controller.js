@@ -14,6 +14,7 @@ class Controller {
             x: 0,
             y: 0
         };
+        this.tabDown = false;
         const img = document.getElementById("crosshair");
         this.cursorOffsetX = Math.round(img.width / 2);
         this.cursorOffsetY = Math.round(img.height / 2);
@@ -48,6 +49,19 @@ class Controller {
     updateMousePos(event) {
         this.mouse.x = event.offsetX + this.cursorOffsetX;
         this.mouse.y = event.offsetY + this.cursorOffsetY;
+    }
+
+    handleKeyDown(event) {
+        if (event.which === 9) {
+            event.preventDefault();
+            this.tabDown = true;
+        }
+    }
+
+    handleKeyUp(event) {
+        if (event.which === 9) {
+            this.tabDown = false;
+        }
     }
 
     preventRightClickMenu(event) {

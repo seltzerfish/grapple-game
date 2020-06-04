@@ -16,6 +16,8 @@ class Game {
     window.addEventListener('mousedown', (event) => this.controller.handleMouseDown(event));
     window.addEventListener('mouseup', (event) => this.controller.handleMouseUp(event));
     window.addEventListener('mousemove', (event) => this.controller.updateMousePos(event));
+    window.addEventListener('keydown', (event) => this.controller.handleKeyDown(event));
+    window.addEventListener('keyup', (event) => this.controller.handleKeyUp(event));
     window.addEventListener('contextmenu', (event) => this.controller.preventRightClickMenu(event));
   }
 
