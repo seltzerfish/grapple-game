@@ -11,14 +11,16 @@ class Vector {
         this.y = y;
     }
 
+    // accepts either one vector argument or two scalar arguments
     add(v, y) {
         if (arguments.length === 1) {
             return new Vector(this.x + v.x, this.y + v.y);
         } else {
-            return new Vector(this.x + y, this.y + y);
+            return new Vector(this.x + v, this.y + y);
         }
     }
 
+    // accepts either one vector argument or two scalar arguments
     subtract(v, y) {
         if (arguments.length === 1) {
             return new Vector(this.x - v.x, this.y - v.y);
@@ -33,6 +35,7 @@ class Vector {
 
     divide(scalar) {
         if (scalar === 0) {
+            console.error("Division by zero in vector: " + this);
             return;
         }
         return new Vector(this.x / scalar, this.y / scalar);
