@@ -12,16 +12,16 @@ class ParallaxBackground {
 
     update(camera) {
         for (let i = 0; i < this.layers.length; i++) {
-            this.layers[i].x = Math.round(camera.x * this.layers[i].speed * -1);
-            this.layers[i].y = Math.round(camera.y * this.layers[i].speed * -1);
+            this.layers[i].x = Math.round(camera.x * this.layers[i].relativeSpeed * -1);
+            this.layers[i].y = Math.round(camera.y * this.layers[i].relativeSpeed * -1);
         }
     }
 }
 
 class BackgroundLayer {
-    constructor(image, speed) {
+    constructor(image, relativeSpeed) {
         this.image = image;
-        this.speed = speed;
+        this.relativeSpeed = relativeSpeed;
         this.x = 0;
         this.y = 0;
     }

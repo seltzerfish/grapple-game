@@ -29,29 +29,35 @@ class Renderer {
 
         for (layer of bg.layers) {
             const img = document.getElementById(layer.image);
-            this.fillCanvasWithImage(img, layer.x, layer.y);
+            const zoomFactor = Math.pow(this.camera.zoom, layer.relativeSpeed);
+            // pretty sure this is wrong somehow
+            const x = Math.round((layer.x * zoomFactor) + (this.camera.zoomOffsetX * layer.relativeSpeed));
+            const y = Math.round((layer.y * zoomFactor) + (this.camera.zoomOffsetY * layer.relativeSpeed));
+            const w = (img.width * zoomFactor);
+            const h = (img.height * zoomFactor);
+            this.fillCanvasWithImage(img, x, y, w, h);
         }
     }
 
-    fillCanvasWithImage(img, x, y) {
+    fillCanvasWithImage(img, x, y, w, h) {
         // get the repeated position closest to the viewport
-        const xStart = x % img.width;
-        const yStart = y % img.height;
+        const xStart = x % w;
+        const yStart = y % h;
 
-        const repetitionsLeft = Math.max(0, Math.ceil(xStart / img.width));
-        const repetitionsRight = Math.max(0, Math.ceil((canvas.width - (xStart + img.width)) / img.width));
-        const repetitionsTop = Math.max(0, Math.ceil(yStart / img.height));
-        const repetitionsBottom = Math.max(0, Math.ceil((canvas.height - (yStart + img.height)) / img.height));
+        const repetitionsLeft = Math.max(0, Math.ceil(xStart / w));
+        const repetitionsRight = Math.max(0, Math.ceil((canvas.width - (xStart + w)) / w));
+        const repetitionsTop = Math.max(0, Math.ceil(yStart / h));
+        const repetitionsBottom = Math.max(0, Math.ceil((canvas.height - (yStart + h)) / h));
 
-        const beginDrawingX = xStart - (repetitionsLeft * img.width);
-        const beginDrawingY = yStart - (repetitionsTop * img.height);
+        const beginDrawingX = xStart - (repetitionsLeft * w);
+        const beginDrawingY = yStart - (repetitionsTop * h);
         const repetitionsX = 1 + repetitionsLeft + repetitionsRight;
         const repetitionsY = 1 + repetitionsTop + repetitionsBottom;
 
         // draw each image
         for (let i = 0; i < repetitionsX; i++) {
             for (let j = 0; j < repetitionsY; j++) {
-                this.ctx.drawImage(img, beginDrawingX + (i * img.width), beginDrawingY + (j * img.height));
+                this.ctx.drawImage(img, beginDrawingX + (i * w), beginDrawingY + (j * h), w, h);
             }
         }
     }
@@ -65,7 +71,7 @@ class Renderer {
 
     drawGrappleWire() {
         this.ctx.beginPath();
-        this.ctx.lineWidth = 4;
+        this.ctx.lineWidth = Math.max(4 * this.camera.zoom, 1);
         this.ctx.strokeStyle = "#ced25c";
 
         this.ctx.moveTo(this.camera.translateX(this.level.player.arm.getHandPositionX()),
@@ -83,18 +89,28 @@ class Renderer {
 
         if (sprite.rotation) {
             this.drawRotatedSprite(sprite);
-        } else if (sprite.srcImage === "") {
+        } else if (sprite.srcImage === "") { // TODO: remove this block once everything has an image
             this.ctx.fillStyle = "white";
             let hitbox;
             for (hitbox of sprite.hitboxes) {
-                this.ctx.fillRect(this.camera.translateX(sprite.x + hitbox.xOffset), this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.width, hitbox.height);
+                const zoomFactor = this.camera.zoom;
+                const x = this.camera.translateX(sprite.x + hitbox.xOffset);
+                const y = this.camera.translateY(sprite.y + hitbox.yOffset)
+                const w = Math.round(hitbox.width * zoomFactor);
+                const h = Math.round(hitbox.height * zoomFactor);
+                this.ctx.fillRect(x, y, w, h);
             }
         } else {
+            const zoomFactor = this.camera.zoom;
+            const x = this.camera.translateX(sprite.x);
+            const y = this.camera.translateY(sprite.y);
+            const w = Math.round(sprite.width * zoomFactor);
+            const h = Math.round(sprite.height * zoomFactor);
             const img = document.getElementById(sprite.srcImage);
-            this.ctx.drawImage(img, this.camera.translateX(sprite.x), this.camera.translateY(sprite.y), sprite.width, sprite.height);
+            this.ctx.drawImage(img, x, y, w, h);
         }
-
     }
+
 
     /**
      * Moves to the sprite's point of rotation (position plus rotationOffset),
@@ -106,7 +122,12 @@ class Renderer {
         this.ctx.save();
         this.ctx.translate(this.camera.translateX(sprite.getPointOfRotationX()), this.camera.translateY(sprite.getPointOfRotationY()));
         this.ctx.rotate(sprite.rotation);
-        this.ctx.drawImage(img, -Math.round(sprite.rotationOffsetX), -Math.round(sprite.rotationOffsetY), sprite.width, sprite.height);
+        const zoomFactor = this.camera.zoom;
+        const x = -Math.round(sprite.rotationOffsetX * zoomFactor);
+        const y = -Math.round(sprite.rotationOffsetY * zoomFactor);
+        const w = Math.round(sprite.width * zoomFactor);
+        const h = Math.round(sprite.height * zoomFactor);
+        this.ctx.drawImage(img, x, y, w, h);
         this.ctx.restore();
     }
 
@@ -140,6 +161,7 @@ class Renderer {
         this.drawHitboxes();
         this.drawGrappleLength();
         this.drawAccelerationCompass();
+        this.drawMousePosition();
     }
 
     drawHitboxes() {
@@ -150,7 +172,9 @@ class Renderer {
             let sprite = sprites[i];
             for (let j = 0; j < sprite.hitboxes.length; j++) {
                 let hitbox = sprite.hitboxes[j];
-                this.ctx.strokeRect(this.camera.translateX(sprite.x + hitbox.xOffset), this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.width, hitbox.height);
+                this.ctx.strokeRect(this.camera.translateX(sprite.x + hitbox.xOffset),
+                    this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.width * this.camera.zoom,
+                    hitbox.height * this.camera.zoom);
             }
         }
         sprites = this.level.actors;
@@ -158,7 +182,9 @@ class Renderer {
             let sprite = sprites[i];
             for (let j = 0; j < sprite.hitboxes.length; j++) {
                 let hitbox = sprite.hitboxes[j];
-                this.ctx.strokeRect(this.camera.translateX(sprite.x + hitbox.xOffset), this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.width, hitbox.height);
+                this.ctx.strokeRect(this.camera.translateX(sprite.x + hitbox.xOffset),
+                    this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.width * this.camera.zoom,
+                    hitbox.height * this.camera.zoom);
             }
         }
         this.ctx.lineWidth = 1;
@@ -216,6 +242,14 @@ class Renderer {
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = "black";
         this.ctx.fillText("Acceleration", 30, 260);
+    }
+
+    drawMousePosition() {
+        this.ctx.fillStyle = "yellow";
+        this.ctx.fillRect(this.camera.translateX(this.camera.translateInputX(this.level.controller.mouse.x)) - 5,
+            this.camera.translateY(this.camera.translateInputY(this.level.controller.mouse.y)) - 5, 10, 10);
+        this.ctx.fillStyle = "white";
+
     }
 }
 

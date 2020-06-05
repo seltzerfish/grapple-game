@@ -41,7 +41,8 @@ class Level {
     }
 
     handleControllerInput() {
-        // nothing here yet. eventually will detect things like hitting the esc key for pausing.
+        const zoom = (this.controller.tabDown) ? 0.4 : 1;
+        this.camera.updateZoom(zoom);
     }
 
     /**
