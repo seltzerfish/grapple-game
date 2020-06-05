@@ -29,7 +29,7 @@ class Renderer {
 
         for (layer of bg.layers) {
             const img = document.getElementById(layer.image);
-            const zoomFactor = (this.camera.zoom) / (Math.pow(this.camera.zoom, 1 - layer.relativeSpeed));
+            const zoomFactor = Math.pow(this.camera.zoom, layer.relativeSpeed);
             // pretty sure this is wrong somehow
             const x = Math.round((layer.x * zoomFactor) + (this.camera.zoomOffsetX * layer.relativeSpeed));
             const y = Math.round((layer.y * zoomFactor) + (this.camera.zoomOffsetY * layer.relativeSpeed));
