@@ -4,7 +4,8 @@ class Camera {
         this.anchor = anchor;
         this.x = 0;
         this.y = 0;
-        this.followStrength = 0.001;
+        this.linearFollowStrength = 0.2;
+        this.exponentialFollowStrength = 0.001;
         this.zoom = 1;
         this.zoomStrength = 0.1;
         this.zoomOffsetX = 0;
@@ -15,8 +16,21 @@ class Camera {
     updatePosition() {
         const xDistance = this.anchor.getCenterX() - this.x;
         const yDistance = this.anchor.getCenterY() - this.y;
-        this.x += Math.round(Math.min(this.followStrength * Math.pow(xDistance, 2) * Math.sign(xDistance), xDistance));
-        this.y += Math.round(Math.min(this.followStrength * Math.pow(yDistance, 2) * Math.sign(yDistance), yDistance));
+        this.moveTowardsAnchorLinearly(xDistance, yDistance);
+    }
+
+    
+    moveTowardsAnchorLinearly(xDistance, yDistance) {
+        this.x += Math.round(this.linearFollowStrength * xDistance);
+        this.y += Math.round(this.linearFollowStrength * yDistance);
+    }
+
+    // currently unused but leaving the code for now in case we wanna use it later
+    moveTowardsAnchorExponentially(xDistance, yDistance) {
+        const exponentialTravelX = this.exponentialFollowStrength * Math.pow(xDistance, 2 ) * Math.sign(xDistance);
+        const exponentialTravelY = this.exponentialFollowStrength * Math.pow(yDistance, 2) * Math.sign(yDistance);
+        this.x += Math.round(exponentialTravelX);
+        this.y += Math.round(exponentialTravelY);
     }
 
     updateZoom(targetZoom) {

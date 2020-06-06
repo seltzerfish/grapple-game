@@ -41,8 +41,21 @@ class Level {
     }
 
     handleControllerInput() {
-        const zoom = (this.controller.tabDown) ? 0.4 : 1;
-        this.camera.updateZoom(zoom);
+        if (this.controller.tabDown) {
+            this.zoomCameraToShowEntireLevel();
+        }
+        else {
+            this.camera.anchor = this.player;
+            this.camera.updateZoom(1);
+        }
+    }
+
+    zoomCameraToShowEntireLevel() {
+        const levelCenterX = Math.floor(this.width / 2);
+        const levelCenterY = Math.floor(this.height / 2);
+        const centerAnchor = new Actor(levelCenterX, levelCenterY, 1, 1);
+        this.camera.anchor = centerAnchor;
+        this.camera.updateZoom(0.4);
     }
 
     /**
