@@ -10,15 +10,15 @@ class Player extends Actor {
         this.grapple = null;
         this.animationFrameDuration = 20;
         this.animationFrames = ['playerSprite'];
-        this.grappleStrengthX = 0.6;
-        this.grappleStrengthY = 0.7;
+        this.grappleStrengthX = 0.5;
+        this.grappleStrengthY = 0.6;
         this.grappleLength = 650;
         this.accelerationCap = 1.5;
         this.extraPullStrength = 0.2;
         this.turningThreshold = 2;
         this.thrustCharges = 10000; // TODO: reduce to a reasonable number and add refill logic.
         this.readyToThrust = true;
-        this.thrustPower = 10;
+        this.thrustPower = 7;
         this.movingLeft = false;
         this.movingRight = false;
         this.arm = new Arm(this, this.controller);
@@ -36,8 +36,8 @@ class Player extends Actor {
         this.updateVelocity();
         this.updatePosition();
         this.handleCollisionsWithSolids(level, this.isSwinging());
-        this.arm.act(level);
         this.detectFallOutOfWorld(level);
+        this.arm.act(level);
     }
 
     handleControllerInput(level) {
@@ -64,11 +64,9 @@ class Player extends Actor {
     handleGrappleMotion(level) {
         const state = this.grapple.state;
         if (state === GrappleState.RETURNED) {
-            level.markSpriteForDeletion(this.grapple);
-            this.grapple = null;
-            this.arm.closeHand();
+            this.removeGrapple(level);
         }
-        if (state === GrappleState.ATTACHED) {
+        else if (state === GrappleState.ATTACHED) {
             const grappleLength = Math.max(this.getGrappleLength(), 1);
             this.xAcceleration += ((this.grapple.getWirePositionX() - this.getCenterX()) / grappleLength) * this.grappleStrengthX;
             this.yAcceleration += ((this.grapple.getWirePositionY() - this.getCenterY()) / grappleLength) * this.grappleStrengthY;
@@ -81,6 +79,12 @@ class Player extends Actor {
                 this.yAcceleration *= 1 + projection;
             }
         }
+    }
+
+    removeGrapple(level) {
+        level.markSpriteForDeletion(this.grapple);
+        this.grapple = null;
+        this.arm.closeHand();
     }
 
     capAcceleration() {
@@ -142,11 +146,18 @@ class Player extends Actor {
     }
 
     detectFallOutOfWorld(level) {
-        if ((this.y + this.height) > level.height) {
-            this.x = level.playerStartX;
-            this.y = level.playerStartY;
-            this.xVelocity = 0;
-            this.yVelocity = 0;
+        if ((this.y) > level.height) {
+            this.die(level);
+        }
+    }
+
+    die(level) {
+        this.x = level.playerStartX;
+        this.y = level.playerStartY;
+        this.xVelocity = 0;
+        this.yVelocity = 0;
+        if (this.grapple) {
+            this.removeGrapple(level);
         }
     }
 
