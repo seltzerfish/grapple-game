@@ -23,9 +23,13 @@ class Hud {
     }
 
     update() {
-        hudctx.clearRect(0, 0, hud.width, hud.height);
+        this.clear();
         this.drawChargeIndicators();
         this.drawHeartIndicators();
+    }
+
+    clear() {
+        hudctx.clearRect(0, 0, hud.width, hud.height);
     }
 
     drawChargeIndicators() {
