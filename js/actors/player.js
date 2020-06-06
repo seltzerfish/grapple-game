@@ -15,6 +15,8 @@ class Player extends Actor {
         this.grappleLength = 650;
         this.accelerationCap = 1.5;
         this.extraPullStrength = 0.2;
+        this.maxHearts = 3;
+        this.hearts = this.maxHearts;
         this.maxThrustCharges = 3;
         this.thrustCharges = this.maxThrustCharges;
         this.rightClickReleased = true;
@@ -175,6 +177,7 @@ class Player extends Actor {
         if (this.grapple) {
             this.removeGrapple(level);
         }
+        this.hearts = Math.max(0, this.hearts - 1);
     }
 
     thrust(x, y, level) {
@@ -203,7 +206,9 @@ class Player extends Actor {
 
     rechargeThrusts() {
         const timeDelta = this.thrustRechargeTimer - this.thrustRechargeDelay;
-        this.thrustCharges = Math.max(this.thrustCharges, Math.floor(timeDelta / this.thrustRechargeRate));
+        if (timeDelta % this.thrustRechargeRate === 0) {
+            this.thrustCharges += 1
+        }
         if (this.thrustCharges >= this.maxThrustCharges) {
             this.thrustChargesFull = true;
         }

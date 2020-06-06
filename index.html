@@ -6,7 +6,10 @@
 </head>
 
 <body>
-    <canvas id="canvas"></canvas>
+    <div style="position: relative;">
+        <canvas id="canvas" style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
+        <canvas id="hud" style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas>
+    </div>
     <img src="static/images/player.png" id="playerSprite" style="display: none;">
     <img src="static/images/player_mirror.png" id="playerSpriteMirrored" style="display: none;">
     <img src="static/images/player_arm_open.png" id="armOpen" style="display: none;">
@@ -20,6 +23,9 @@
     <img src="static/images/bg1_2.png" id="bg1_2" style="display: none;">
     <img src="static/images/bg1_3_lower_opacity.png" id="bg1_3" style="display: none;">
     <img src="static/images/crosshair2.png" id="crosshair" style="display: none;">
+    <img src="static/images/ui/thrust_indicator_empty.png" id="thrustIndicatorEmpty" style="display: none;">
+    <img src="static/images/ui/thrust_indicator_full.png" id="thrustIndicatorFull" style="display: none;">
+    <img src="static/images/ui/heart_indicator.png" id="heartIndicator" style="display: none;">
     <button onclick="toggleDebug()">Toggle Debug</button>
     <script src="js/math_util.js"></script>
     <script src="js/collision.js"></script>
@@ -33,6 +39,7 @@
     <script src="js/actors/arm.js"></script>
     <script src="js/actors/grapple.js"></script>
     <script src="js/parallax_background.js"></script>
+    <script src="js/hud.js"></script>
     <script src="js/level.js"></script>
     <script src="js/levels/level1.js"></script>
     <script src="js/camera.js"></script>
