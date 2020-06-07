@@ -15,7 +15,7 @@ class Grapple extends Actor {
         this.player = player;
         this.state = GrappleState.EXTENDING;
         this.length = length;
-        this.extendSpeedFactor = 0.07;
+        this.extendSpeedFactor = 0.09;
         this.returnAcceleration = 1.15;
         this.returningSpeed = 5;
         this.calculateEndpoint(targetX, targetY);
