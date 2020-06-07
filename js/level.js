@@ -41,7 +41,25 @@ class Level {
     }
 
     handleControllerInput() {
-        const zoom = (this.controller.tabDown) ? 0.4 : 1;
+        if (this.controller.tabDown) {
+            this.zoomCameraToShowEntireLevel();
+        }
+        else {
+            this.camera.anchor = this.player;
+            this.camera.updateZoom(1);
+            this.camera.linearFollowStrength = 0.2;
+        }
+    }
+
+    zoomCameraToShowEntireLevel() {
+        const levelCenterX = Math.floor(this.width / 2);
+        const levelCenterY = Math.floor(this.height / 2);
+        this.camera.linearFollowStrength = 0.05;
+        const zoom = Math.min(canvas.height / this.height, canvas.width / this.width);
+        // its hacky to create a new actor as the camera's anchor, but camera uses `getCenterX()` and 
+        // `getCenterY()` to update its position, and i think that's something we wanna keep.
+        const centerAnchor = new Actor(levelCenterX, levelCenterY, 1, 1);
+        this.camera.anchor = centerAnchor;
         this.camera.updateZoom(zoom);
     }
 
