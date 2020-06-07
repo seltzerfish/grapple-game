@@ -2,6 +2,8 @@
 
 var canvas;
 var ctx;
+var hud;
+var hudctx;
 var game;
 
 class Game {
@@ -9,6 +11,7 @@ class Game {
     this.controller = new Controller();
     this.player = new Player(this.controller);
     this.camera = new Camera(this.player);
+    this.hud = new Hud(this.player);
     this.setupLevel(LEVEL_1);
 
     // this.level.setDefaultValues();
@@ -34,9 +37,13 @@ class Game {
 
 window.onload = function init() {
   canvas = document.getElementById('canvas');
+  hud = document.getElementById('hud');
   ctx = canvas.getContext('2d');
+  hudctx = hud.getContext('2d');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight - 100;
+  hud.width = canvas.width;
+  hud.height = canvas.height;
   game = new Game();
   window.requestAnimationFrame(loop);
 
@@ -44,6 +51,7 @@ window.onload = function init() {
 
 function loop() {
   game.level.update();
-  game.renderer.render(ctx);
+  game.renderer.render();
+  game.hud.maybeUpdate();
   window.requestAnimationFrame(loop);
 }

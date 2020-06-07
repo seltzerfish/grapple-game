@@ -15,13 +15,20 @@ class Player extends Actor {
         this.grappleLength = 540;
         this.accelerationCap = 1.5;
         this.extraPullStrength = 0.2;
-        this.turningThreshold = 2;
-        this.thrustCharges = 10000; // TODO: reduce to a reasonable number and add refill logic.
-        this.readyToThrust = true;
+        this.maxHearts = 3;
+        this.hearts = this.maxHearts;
+        this.maxThrustCharges = 3;
+        this.thrustCharges = this.maxThrustCharges;
+        this.rightClickReleased = true;
+        this.thrustChargesFull = true;
+        this.thrustRechargeTimer = 0;
+        this.thrustRechargeDelay = 100;
+        this.thrustRechargeRate = 40;
         this.thrustPower = 7;
         this.movingLeft = false;
         this.movingRight = false;
         this.arm = new Arm(this, this.controller);
+        this.turningThresholdSpeed = 2;
     }
 
     act(level) {
@@ -38,26 +45,36 @@ class Player extends Actor {
         this.handleCollisionsWithSolids(level, this.isSwinging());
         this.detectFallOutOfWorld(level);
         this.arm.act(level);
+        this.handleThrustRecharging();
     }
 
     handleControllerInput(level) {
         if (!this.grapple) {
             if (this.controller.leftClickDown) {
-                this.grapple = new Grapple(this, level.camera.translateInputX(this.controller.leftClickDownX),
-                    level.camera.translateInputY(this.controller.leftClickDownY), this.grappleLength);
-                this.grapple.level = level;
-                level.actors.push(this.grapple);
-                this.arm.openHand();
+                this.createGrapple(level)
             }
-            else if (this.controller.rightClickDown && this.readyToThrust && this.thrustCharges > 0) {
-                this.readyToThrust = false;
-                this.thrustCharges -= 1;
-                this.thrust(level.camera.translateInputX(this.controller.rightClickDownX),
-                    level.camera.translateInputY(this.controller.rightClickDownY), level);
-            }
-            else if (!this.readyToThrust && !this.controller.rightClickDown) {
-                this.readyToThrust = true;
-            }
+        }
+        if (this.controller.rightClickDown && this.rightClickReleased) {
+            this.tryToThrust(level);
+        }
+        else if (!this.rightClickReleased && !this.controller.rightClickDown) {
+            this.rightClickReleased = true;
+        }
+    }
+
+    createGrapple(level) {
+        this.grapple = new Grapple(this, level.camera.translateInputX(this.controller.leftClickDownX),
+            level.camera.translateInputY(this.controller.leftClickDownY), this.grappleLength);
+        this.grapple.level = level;
+        level.actors.push(this.grapple);
+        this.arm.openHand();
+    }
+
+    tryToThrust(level) {
+        this.rightClickReleased = false;
+        if (this.thrustCharges > 0) {
+            this.thrust(level.camera.translateInputX(this.controller.rightClickDownX),
+                level.camera.translateInputY(this.controller.rightClickDownY), level);
         }
     }
 
@@ -135,11 +152,11 @@ class Player extends Actor {
     }
 
     updateDirection() {
-        if (this.isMovingLeft(-this.turningThreshold)) {
+        if (this.isMovingLeft(-this.turningThresholdSpeed)) {
             this.movingLeft = true;
             this.movingRight = false;
         }
-        else if (this.isMovingRight(this.turningThreshold)) {
+        else if (this.isMovingRight(this.turningThresholdSpeed)) {
             this.movingRight = true;
             this.movingLeft = false;
         }
@@ -156,21 +173,44 @@ class Player extends Actor {
         this.y = level.playerStartY;
         this.xVelocity = 0;
         this.yVelocity = 0;
+        this.thrustCharges = this.maxThrustCharges;
         if (this.grapple) {
             this.removeGrapple(level);
         }
+        this.hearts = Math.max(0, this.hearts - 1);
     }
 
     thrust(x, y, level) {
+        this.thrustCharges -= 1;
         const mag = MathUtil.distanceBetween(this.getCenterX(), this.getCenterY(), x, y);
         const thrustDirectionX = (this.getCenterX() - x) / mag;
         const thrustDirectionY = (this.getCenterY() - y) / mag;
         this.xVelocity += thrustDirectionX * this.thrustPower;
         this.yVelocity += thrustDirectionY * this.thrustPower;
-
+        this.thrustChargesFull = false;
+        this.thrustRechargeTimer = 0;
         const numFlames = MathUtil.getRandomInt(3);
         for (let i = 0; i < numFlames + 3; i++) {
             level.actors.push(new ThrustFlame(this.arm.getHandPositionX(), this.arm.getHandPositionY(), -thrustDirectionX, -thrustDirectionY));
+        }
+    }
+
+    handleThrustRecharging() {
+        if (!this.thrustChargesFull) {
+            this.thrustRechargeTimer += 1;
+            if (this.thrustRechargeTimer > this.thrustRechargeDelay) {
+                this.rechargeThrusts();
+            }
+        }
+    }
+
+    rechargeThrusts() {
+        const timeDelta = this.thrustRechargeTimer - this.thrustRechargeDelay;
+        if (timeDelta % this.thrustRechargeRate === 0) {
+            this.thrustCharges += 1
+        }
+        if (this.thrustCharges >= this.maxThrustCharges) {
+            this.thrustChargesFull = true;
         }
     }
 }
