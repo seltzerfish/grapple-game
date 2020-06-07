@@ -11,7 +11,7 @@ var LEVEL_1 = new Level(
         new Solid(1400, 700, 100, 300),
         new Solid(1200, 200, 100, 200),
         new Dog(-400, 800),
-        new Jupiter(100, 500    )
+        new Jupiter(85, 500    )
     ],
     [] // actors
 );
