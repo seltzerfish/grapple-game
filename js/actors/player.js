@@ -12,7 +12,7 @@ class Player extends Actor {
         this.animationFrames = ['playerSprite'];
         this.grappleStrengthX = 0.5;
         this.grappleStrengthY = 0.6;
-        this.grappleLength = 650;
+        this.grappleLength = 540;
         this.accelerationCap = 1.5;
         this.extraPullStrength = 0.2;
         this.turningThreshold = 2;
