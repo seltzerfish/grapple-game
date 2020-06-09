@@ -17,6 +17,7 @@ class Sprite {
         this.rotationOffsetX = Math.round(this.width / 2);  // default point of rotation is about the center.
         this.rotationOffsetY = Math.round(this.height / 2);
         this.hitboxes = [new Hitbox(this, 0, 0, width, height)]; // default hitbox is the sprite image boundary
+        this.isHurt = false;
     }
 
     getCenterX() {
@@ -29,6 +30,7 @@ class Sprite {
 
     isCollidingWith(otherSprite) {
         // TODO: make this method smarter so that it doesn't check all pairs of hitboxes
+        this.isHurt = false;
         let thisHitbox;
         let thatHitbox;
         this.minTranslationX = 0;
@@ -36,6 +38,9 @@ class Sprite {
         for (thisHitbox of this.hitboxes) {
             for (thatHitbox of otherSprite.hitboxes) {
                 const mtv = thisHitbox.getMinimumTranslationVector(thatHitbox);
+                if ((thatHitbox.isDeadly) && (mtv[0] || mtv[1])) { 
+                    this.isHurt = true;
+                }
                 this.minTranslationX += mtv[0];
                 this.minTranslationY += mtv[1];
             }

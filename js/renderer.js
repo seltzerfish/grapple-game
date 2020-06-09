@@ -90,14 +90,9 @@ class Renderer {
         if (sprite.rotation) {
             this.drawRotatedSprite(sprite);
         } else if (sprite.srcImage === "") { // TODO: remove this block once everything has an image
-            if (sprite instanceof DeadlySolid) {
-                this.ctx.fillStyle = "red";
-            }
-            else {
-                this.ctx.fillStyle = "white";
-            }
             let hitbox;
             for (hitbox of sprite.hitboxes) {
+                this.ctx.fillStyle = (hitbox.isDeadly) ? "#d703fc" : "white";
                 const zoomFactor = this.camera.zoom;
                 const x = this.camera.translateX(sprite.x + hitbox.xOffset);
                 const y = this.camera.translateY(sprite.y + hitbox.yOffset)
