@@ -77,9 +77,14 @@ class Actor extends Sprite {
     handleCollisionsWithSolids(level, ignoreFriction = false) {
         for (let solid of level.getPossibleSolidCollisions(this)) {
             if (this.isCollidingWith(solid)) {
-                this.bounceOffSolid(solid);
-                if (!ignoreFriction) {
-                    this.applyFriction(solid);
+                if (solid.isDeadly) {
+                    this.die(level);
+                }
+                else {
+                    this.bounceOffSolid(solid);
+                    if (!ignoreFriction) {
+                        this.applyFriction(solid);
+                    }
                 }
             }
         }
@@ -103,6 +108,10 @@ class Actor extends Sprite {
     applyFriction(solid) {
         this.xVelocity *= (1 - solid.frictionCoefficient) * (1 - this.frictionCoefficient);
         this.yVelocity *= (1 - solid.frictionCoefficient) * (1 - this.frictionCoefficient);
+    }
+
+    die(level) {
+        // nothing here. needs to be overridden by child classes
     }
 
 }

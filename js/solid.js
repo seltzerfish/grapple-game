@@ -3,7 +3,8 @@
  */
 
 class Solid extends Sprite {
-    constructor(x, y, width, height, srcImage) {
+    constructor(x, y, width, height, srcImage, isDeadly=false) {
         super(x, y, width, height, srcImage);
+        this.isDeadly = isDeadly;
     }
 }
