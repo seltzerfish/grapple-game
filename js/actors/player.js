@@ -15,7 +15,7 @@ class Player extends Actor {
         this.grappleLength = 540;
         this.accelerationCap = 1.5;
         this.extraPullStrength = 0.2;
-        this.maxHearts = 3;
+        this.maxHearts = 5;
         this.hearts = this.maxHearts;
         this.maxThrustCharges = 3;
         this.thrustCharges = this.maxThrustCharges;
@@ -23,7 +23,7 @@ class Player extends Actor {
         this.thrustChargesFull = true;
         this.thrustRechargeTimer = 0;
         this.thrustRechargeDelay = 100;
-        this.thrustRechargeRate = 40;
+        this.thrustRechargeRate = 35;
         this.thrustPower = 7;
         this.movingLeft = false;
         this.movingRight = false;
@@ -51,7 +51,7 @@ class Player extends Actor {
     handleControllerInput(level) {
         if (!this.grapple) {
             if (this.controller.leftClickDown) {
-                this.createGrapple(level)
+                this.createGrapple(level);
             }
         }
         if (this.controller.rightClickDown && this.rightClickReleased) {
@@ -68,6 +68,7 @@ class Player extends Actor {
         this.grapple.level = level;
         level.actors.push(this.grapple);
         this.arm.openHand();
+        SoundUtil.playLoopedSound(SOUNDS.NON_ATTACHED_GRAPPLE);
     }
 
     tryToThrust(level) {
@@ -102,6 +103,7 @@ class Player extends Actor {
         level.markSpriteForDeletion(this.grapple);
         this.grapple = null;
         this.arm.closeHand();
+        SoundUtil.stopLoopedSound(SOUNDS.NON_ATTACHED_GRAPPLE);
     }
 
     capAcceleration() {
@@ -169,18 +171,39 @@ class Player extends Actor {
     }
 
     die(level) {
+        this.hearts = Math.max(0, this.hearts - 1);
+        SoundUtil.stopLoopedSound(SOUNDS.ATTACHED_GRAPPLE);
+        SoundUtil.stopLoopedSound(SOUNDS.NON_ATTACHED_GRAPPLE);
+        if (this.hearts === 0) {
+            level.gameOver();
+        }
+        else {
+            SoundUtil.playSound(SOUNDS.SCREAM);
+            this.resetPosition(level);
+            this.resetCharges();
+        }
+    }
+
+    resetPosition(level) {
         this.x = level.playerStartX;
         this.y = level.playerStartY;
         this.xVelocity = 0;
         this.yVelocity = 0;
-        this.thrustCharges = this.maxThrustCharges;
         if (this.grapple) {
             this.removeGrapple(level);
         }
-        this.hearts = Math.max(0, this.hearts - 1);
+    }
+
+    resetCharges() {
+        this.thrustCharges = this.maxThrustCharges;
+    }
+
+    resetHearts() {
+        this.hearts = this.maxHearts;
     }
 
     thrust(x, y, level) {
+        SoundUtil.playSound(SOUNDS.THRUST);
         this.thrustCharges -= 1;
         const mag = MathUtil.distanceBetween(this.getCenterX(), this.getCenterY(), x, y);
         const thrustDirectionX = (this.getCenterX() - x) / mag;

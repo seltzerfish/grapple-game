@@ -77,14 +77,12 @@ class Actor extends Sprite {
     handleCollisionsWithSolids(level, ignoreFriction = false) {
         for (let solid of level.getPossibleSolidCollisions(this)) {
             if (this.isCollidingWith(solid)) {
-                if (solid.isDeadly) {
+                if (this.isHurt) {
                     this.die(level);
                 }
-                else {
-                    this.bounceOffSolid(solid);
-                    if (!ignoreFriction) {
-                        this.applyFriction(solid);
-                    }
+                this.bounceOffSolid(solid);
+                if (!ignoreFriction) {
+                    this.applyFriction(solid);
                 }
             }
         }

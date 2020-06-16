@@ -55,6 +55,9 @@ class Grapple extends Actor {
 
     attach() {
         this.state = GrappleState.ATTACHED;
+        SoundUtil.playSound(SOUNDS.GRAPPLE_STRIKE);
+        SoundUtil.stopLoopedSound(SOUNDS.NON_ATTACHED_GRAPPLE);
+        SoundUtil.playLoopedSound(SOUNDS.ATTACHED_GRAPPLE);
     }
 
     extend() {
@@ -71,6 +74,10 @@ class Grapple extends Actor {
     }
 
     return() {
+        if (this.state === GrappleState.ATTACHED) {
+            SoundUtil.stopLoopedSound(SOUNDS.ATTACHED_GRAPPLE);
+            SoundUtil.playLoopedSound(SOUNDS.NON_ATTACHED_GRAPPLE);
+        }
         this.state = GrappleState.RETURNING;
     }
 

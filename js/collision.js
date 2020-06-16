@@ -5,12 +5,13 @@
  */
 class Hitbox {
 
-    constructor(sprite, xOffset, yOffset, width, height, rotation = 0) {
+    constructor(sprite, xOffset, yOffset, width, height, isDeadly=false, rotation = 0) {
         this.sprite = sprite;
         this.xOffset = xOffset;
         this.yOffset = yOffset;
         this.width = width;
         this.height = height;
+        this.isDeadly = isDeadly;
         this.rotation = rotation;
     }
 
@@ -72,5 +73,11 @@ class Hitbox {
             }
         }
         return [mtv_x, mtv_y];
+    }
+}
+
+class DeadlyHitbox extends Hitbox {
+    constructor(sprite, xOffset, yOffset, width, height, rotation = 0) {
+        super(sprite, xOffset, yOffset, width, height, true, rotation = 0)
     }
 }

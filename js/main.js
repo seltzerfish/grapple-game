@@ -46,7 +46,6 @@ window.onload = function init() {
   hud.height = canvas.height;
   game = new Game();
   window.requestAnimationFrame(loop);
-
 }
 
 function loop() {

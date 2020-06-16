@@ -15,4 +15,8 @@ class MathUtil {
         return Math.floor(Math.random() * Math.floor(max));
     }
 
+    static choose(array) {
+        return array[Math.floor(Math.random()*array.length)];
+    }
+
 }

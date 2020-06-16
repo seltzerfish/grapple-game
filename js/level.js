@@ -104,9 +104,16 @@ class Level {
     }
 
     removeSolid(solid) {
-        let index = this.solids.indexOf(actor);
+        let index = this.solids.indexOf(solid);
         if (index > -1) {
             this.solids.splice(index, 1);
         }
+    }
+
+    gameOver() {
+        SoundUtil.playSound(SOUNDS.GAME_OVER);
+        this.player.resetPosition(this);
+        this.player.resetCharges();
+        this.player.resetHearts();
     }
 }
