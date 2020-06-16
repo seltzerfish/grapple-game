@@ -38,6 +38,10 @@ class Hud {
             const img = document.getElementById(targetImage);
             hudctx.drawImage(img, this.x + (this.spacing * i), hud.height - 80);
         }
+        if (this.filledChargeIndicators < this.player.thrustCharges && this.filledHeartIndicators === this.player.hearts) {
+            const num = this.player.maxThrustCharges - this.player.thrustCharges;
+            SoundUtil.playSound("refill" + num);
+        }
         this.filledChargeIndicators = this.player.thrustCharges;
     }
 
@@ -47,5 +51,6 @@ class Hud {
             const img = document.getElementById("heartIndicator");
             hudctx.drawImage(img, this.x + (this.spacing * i), 30);
         }
+        this.filledHeartIndicators = this.player.hearts;
     }
 }

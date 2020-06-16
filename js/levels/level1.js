@@ -18,8 +18,6 @@ var LEVEL_1 = new Level(
         new Solid(1000, 1200, 500, 100),
         new Solid(1000, 1800, 500, 100),
         new Solid(1500, 1200, 100, 700),
-
-
         new Dog(-1100, 1300),
         new Jupiter(85, 500),   
     ],

@@ -10,6 +10,7 @@
         <canvas id="canvas" style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
         <canvas id="hud" style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas>
     </div>
+    <!-- IMAGES -->
     <img src="static/images/player.png" id="playerSprite" style="display: none;">
     <img src="static/images/player_mirror.png" id="playerSpriteMirrored" style="display: none;">
     <img src="static/images/player_arm_open.png" id="armOpen" style="display: none;">
@@ -26,8 +27,20 @@
     <img src="static/images/ui/thrust_indicator_empty.png" id="thrustIndicatorEmpty" style="display: none;">
     <img src="static/images/ui/thrust_indicator_full.png" id="thrustIndicatorFull" style="display: none;">
     <img src="static/images/ui/heart_indicator.png" id="heartIndicator" style="display: none;">
-    <button onclick="toggleDebug()" style="">Toggle Debug</button>
+
+    <!-- SOUNDS -->
+    <audio src="static/sounds/sfxSpritesheet.ogg" id="sfx_ogg"></audio>
+    <script src="static/sounds/sfxSpritesheet.js"></script>
+
+    <!-- DEBUG TOGGLE -->
+    <button onclick="toggleDebug()" style="position: absolute; bottom: 10px;">Toggle Debug</button>
+
+    <!-- THIRD PARTY -->
+    <script src="js/third_party/howler.min.js"></script>
+    
+    <!-- CODE -->
     <script src="js/math_util.js"></script>
+    <script src="js/sound_util.js"></script>
     <script src="js/collision.js"></script>
     <script src="js/sprite.js"></script>
     <script src="js/actor.js"></script>
