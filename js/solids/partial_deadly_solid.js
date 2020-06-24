@@ -3,7 +3,7 @@
  * but it's useful for level design.
  */
 
-class PartialDeadlySolid extends Solid{
+class PartialDeadlySolid extends Solid {
     constructor(x, y, w, h, topDeadly=false, bottomDeadly=true, leftDeadly=true, rightDeadly=true, srcImage) {
         super(x, y, w, h, srcImage);
         const lineWidth = 60;

@@ -3,8 +3,8 @@ var LEVEL_1 = new Level(
     1000, // width
     1900, // height
     new ParallaxBackground(["bg1_1", "bg1_2", "bg1_3"], [0.05, 0.1, 0.15]), // background
-    -1050, // player start pos. X
-    1100, // player start pos. Y
+    640, // player start pos. X
+    740, // player start pos. Y
     0.25, // gravity constant
     [ // solids
         new PartialDeadlySolid(500, 800, 300, 100, false, true, false, false),

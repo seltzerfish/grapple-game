@@ -1,18 +1,16 @@
-
 /**
- * Hitbox class.
- * contains a reference to the sprite it belongs to so that its position doesn't have to be constantly updated
+ * Abstract parent class for collision geometry.
  */
-class Hitbox {
+class CollidableShape {
 
-    constructor(sprite, xOffset, yOffset, width, height, isDeadly=false, rotation = 0) {
+    constructor(sprite, xOffset, yOffset, isDeadly=false) {
+        if (this.constructor === CollidableShape) {
+            throw new Error('CollidableShape class is Abstract. Use an Hitbox or CircularHitbox instead.');
+        }
         this.sprite = sprite;
         this.xOffset = xOffset;
         this.yOffset = yOffset;
-        this.width = width;
-        this.height = height;
         this.isDeadly = isDeadly;
-        this.rotation = rotation;
     }
 
     /** 
@@ -21,11 +19,19 @@ class Hitbox {
      * returns the smallest vector necessary to remove this hitbox from the one passed in.
      * if no collision, returns [0, 0]
      * 
-     * @param {Hitbox} that 
+     * @param {CollidableShape} that 
      */
     getMinimumTranslationVector(that) {
         // TODO: add support for SAT collisions in the case of a rotated hitbox
-        return this.getMinimumTranslationVectorAABB(that);
+        if (this instanceof Hitbox && that instanceof Hitbox) {
+            return this.getMTV_AABB(that);
+        }
+        else if (this instanceof CircularHitbox && that instanceof CircularHitbox) {
+            return this.getMTV_TwoCircles(that);
+        }
+        else {
+            return this.getMTV_RectangleAndCircle(that);
+        }
     }
 
     /**
@@ -33,7 +39,7 @@ class Hitbox {
      * 
      * @param {Hitbox} that 
      */
-    getMinimumTranslationVectorAABB(that) {
+    getMTV_AABB(that) {
         let mtv_x = 0;
         let mtv_y = 0;
 
@@ -74,10 +80,45 @@ class Hitbox {
         }
         return [mtv_x, mtv_y];
     }
+
+    /**
+     * Collision between 2 circles.
+     * 
+     * @param {CircularHitbox} that 
+     */
+    getMTV_TwoCircles(that) {
+        return [0, 0];
+    }
+
+    getMTV_RectangleAndCircle(that) {
+        return [0, 0];
+    }
+}
+
+class Hitbox extends CollidableShape {
+    constructor(sprite, xOffset, yOffset, width, height, isDeadly=false, rotation=0) {
+        super(sprite, xOffset, yOffset, isDeadly);
+        this.width = width;
+        this.height = height;
+        this.rotation = rotation;
+    }
+}
+
+class CircularHitbox extends CollidableShape {
+    constructor(sprite, xOffset, yOffset, radius, isDeadly=false) {
+        super(sprite, xOffset, yOffset, isDeadly);
+        this.radius = radius;
+    }
 }
 
 class DeadlyHitbox extends Hitbox {
     constructor(sprite, xOffset, yOffset, width, height, rotation = 0) {
-        super(sprite, xOffset, yOffset, width, height, true, rotation = 0)
+        super(sprite, xOffset, yOffset, width, height, true, rotation = 0);
+    }
+}
+
+class DeadlyCircularHitbox extends CircularHitbox {
+    constructor(sprite, xOffset, yOffset, radius) {
+        super(sprite, xOffset, yOffset, radius, true);
     }
 }
