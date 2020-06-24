@@ -12,8 +12,9 @@ class ParallaxBackground {
 
     update(camera) {
         for (let i = 0; i < this.layers.length; i++) {
-            this.layers[i].x = Math.round(camera.x * this.layers[i].relativeSpeed * -1);
-            this.layers[i].y = Math.round(camera.y * this.layers[i].relativeSpeed * -1);
+            const x = Math.round(camera.x * this.layers[i].relativeSpeed * -1);
+            const y = Math.round(camera.y * this.layers[i].relativeSpeed * -1);
+            this.layers[i].setPosition(x, y);
         }
     }
 }
@@ -24,5 +25,12 @@ class BackgroundLayer {
         this.relativeSpeed = relativeSpeed;
         this.x = 0;
         this.y = 0;
+        this.xOffset = MathUtil.getRandomInt(10000);
+        this.yOffset = MathUtil.getRandomInt(10000);
+    }
+
+    setPosition(x, y) {
+        this.x = x + this.xOffset;
+        this.y = y + this.yOffset;
     }
 }
