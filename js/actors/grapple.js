@@ -18,6 +18,7 @@ class Grapple extends Actor {
         this.extendSpeedFactor = 0.09;
         this.returnAcceleration = 1.15;
         this.returningSpeed = 5;
+        this.returningRotationSpeed = 0.15;
         this.calculateEndpoint(targetX, targetY);
         this.rotation = this.calculateRotation();
         this.calculateWirePositionOffsets();
@@ -89,6 +90,9 @@ class Grapple extends Actor {
         // TODO: change rotation on the way back
         const diffX = this.player.arm.getHandPositionX() - this.getWirePositionX();
         const diffY = this.player.arm.getHandPositionY() - this.getWirePositionY();
+        const goalRotation = MathUtil.calculateTheta(diffY, diffX);
+        this.rotation += MathUtil.minimumRotationDifference(this.rotation, goalRotation) * this.returningRotationSpeed;
+        this.calculateWirePositionOffsets();
         const mag = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
         this.returningSpeed *= this.returnAcceleration;
         if (this.returningSpeed < mag) {
