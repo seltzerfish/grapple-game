@@ -25,7 +25,6 @@ class MathUtil {
      * rotation of PI. So we have to handle this ourselves.
      */ 
     static minimumRotationDifference(startRadians, goalRadians) {
-        console.log(goalRadians, startRadians);
         if (Math.abs(goalRadians - startRadians) > Math.PI) {
             return ((Math.PI - Math.abs(startRadians)) + (Math.PI - Math.abs(goalRadians))) 
                     * Math.sign(startRadians); 
