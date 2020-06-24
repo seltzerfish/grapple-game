@@ -25,8 +25,8 @@ class BackgroundLayer {
         this.relativeSpeed = relativeSpeed;
         this.x = 0;
         this.y = 0;
-        this.xOffset = MathUtil.getRandomInt(10000);
-        this.yOffset = MathUtil.getRandomInt(10000);
+        this.xOffset = MathUtil.getRandomInt(100000);
+        this.yOffset = MathUtil.getRandomInt(100000);
     }
 
     setPosition(x, y) {
