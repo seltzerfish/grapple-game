@@ -12,7 +12,7 @@ class Game {
     this.player = new Player(this.controller);
     this.camera = new Camera(this.player);
     this.hud = new Hud(this.player);
-    this.setupLevel(TEST_LEVEL);
+    this.setupLevel(LEVEL_1);
 
     // this.level.setDefaultValues();
     this.renderer = new Renderer(this.level, ctx, this.camera);

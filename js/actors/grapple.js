@@ -9,7 +9,7 @@ const GrappleState = {
 class Grapple extends Actor {
     constructor(player, targetX, targetY, length) {
         super(player.arm.getHandPositionX(), player.arm.getHandPositionY(), 48, 40, "claw");
-        this.hitboxes = [new Hitbox(this, Math.round(this.width / 2) - 10, Math.round(this.height / 2) - 10, 20, 20)];
+        this.hitboxes = [new CircularHitbox(this, Math.round(this.width / 2), Math.round(this.height / 2), 11)];
         this.x -= this.width / 2;
         this.y -= this.height / 2;
         this.player = player;

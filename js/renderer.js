@@ -107,9 +107,6 @@ class Renderer {
             const w = Math.round(sprite.width * zoomFactor);
             const h = Math.round(sprite.height * zoomFactor);
             const img = document.getElementById(sprite.srcImage);
-            if (x % 1 !== 0 || y % 1 !== 0) {
-                debugger;
-            }
             this.ctx.drawImage(img, x, y, w, h);
         }
     }

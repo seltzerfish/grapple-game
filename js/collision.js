@@ -135,26 +135,13 @@ class CollidableShape {
         const mtvMag = circle.radius - dist;
         const mtvTheta = MathUtil.calculateTheta(circY - nearestY, circX - nearestX);
         let mtv = MathUtil.polarToCartesian(mtvMag, mtvTheta);
-        if (Math.abs(mtv.x) < 0.000000000000001) {
+        const threshold = 0.000000000000001;
+        if (Math.abs(mtv.x) < threshold) {
             mtv.x = 0;
         }
-        if (Math.abs(mtv.y) < 0.000000000000001) {
+        if (Math.abs(mtv.y) < threshold) {
             mtv.y = 0;
         }
-        
-        // let mtv = {
-        //     x: 0,
-        //     y: 0
-        // };
-        // const xDist = circX - nearestX;
-        // const yDist = circY - nearestY;
-        // if (Math.abs(xDist) > Math.abs(yDist)) {
-        //     mtv.x = (circle.radius - Math.abs(xDist)) * Math.sign(xDist);
-        // }
-        // else {
-        //     mtv.y = (circle.radius - Math.abs(yDist)) * Math.sign(yDist);
-        // }
-
         if (this instanceof CircularHitbox) {
             return [mtv.x, mtv.y];
         }
