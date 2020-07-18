@@ -107,6 +107,9 @@ class Renderer {
             const w = Math.round(sprite.width * zoomFactor);
             const h = Math.round(sprite.height * zoomFactor);
             const img = document.getElementById(sprite.srcImage);
+            if (x % 1 !== 0 || y % 1 !== 0) {
+                debugger;
+            }
             this.ctx.drawImage(img, x, y, w, h);
         }
     }
@@ -166,15 +169,23 @@ class Renderer {
 
     drawHitboxes() {
         this.ctx.strokeStyle = "red";
-        this.ctx.lineWidth = 3;
+        this.ctx.lineWidth = 4;
         let sprites = this.level.solids;
         for (let i = 0; i < sprites.length; i++) {
             let sprite = sprites[i];
             for (let j = 0; j < sprite.hitboxes.length; j++) {
                 let hitbox = sprite.hitboxes[j];
-                this.ctx.strokeRect(this.camera.translateX(sprite.x + hitbox.xOffset),
+                if (hitbox instanceof Hitbox) {
+                    this.ctx.strokeRect(this.camera.translateX(sprite.x + hitbox.xOffset),
                     this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.width * this.camera.zoom,
                     hitbox.height * this.camera.zoom);
+                }
+                else if (hitbox instanceof CircularHitbox) {
+                    this.ctx.beginPath();
+                    this.ctx.arc(this.camera.translateX(sprite.x + hitbox.xOffset),
+                    this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.radius, 0, 2 * Math.PI);
+                    ctx.stroke();
+                }
             }
         }
         sprites = this.level.actors;
@@ -182,9 +193,17 @@ class Renderer {
             let sprite = sprites[i];
             for (let j = 0; j < sprite.hitboxes.length; j++) {
                 let hitbox = sprite.hitboxes[j];
-                this.ctx.strokeRect(this.camera.translateX(sprite.x + hitbox.xOffset),
+                if (hitbox instanceof Hitbox) {
+                    this.ctx.strokeRect(this.camera.translateX(sprite.x + hitbox.xOffset),
                     this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.width * this.camera.zoom,
                     hitbox.height * this.camera.zoom);
+                }
+                else if (hitbox instanceof CircularHitbox) {
+                    this.ctx.beginPath();
+                    this.ctx.arc(this.camera.translateX(sprite.x + hitbox.xOffset),
+                    this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.radius, 0, 2 * Math.PI);
+                    ctx.stroke();
+                }
             }
         }
         this.ctx.lineWidth = 1;

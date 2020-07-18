@@ -20,8 +20,8 @@ class Actor extends Sprite {
     }
 
     updatePosition() {
-        this.x += Math.round(this.xVelocity);
-        this.y += Math.round(this.yVelocity);
+        this.x += this.xVelocity;
+        this.y += this.yVelocity;
     }
 
     updateVelocity() {
@@ -53,11 +53,11 @@ class Actor extends Sprite {
         return this.yVelocity > 0;
     }
 
-    isMovingLeft(speed=0) {
+    isMovingLeft(speed = 0) {
         return this.xVelocity < speed;
     }
 
-    isMovingRight(speed=0) {
+    isMovingRight(speed = 0) {
         return this.xVelocity > speed;
     }
 
@@ -92,14 +92,30 @@ class Actor extends Sprite {
         // Move actor out of solid
         this.x += this.minTranslationX;
         this.y += this.minTranslationY;
-
         // bounce this off of solid
         const magnitude = this.getTranslationVectorMagnitude();
-        if (this.minTranslationX !== 0 && Math.sign(this.minTranslationX) !== Math.sign(this.xVelocity)) {
-            this.xVelocity *= -1 * Math.abs(this.minTranslationX / magnitude) * solid.bounceCoefficient * this.bounceCoefficient;
+        if (this.minTranslationX === 0 || this.minTranslationY === 0) {
+            if (this.minTranslationX !== 0 && Math.sign(this.minTranslationX) !== Math.sign(this.xVelocity)) {
+                this.xVelocity *= -1 * Math.abs(this.minTranslationX / magnitude) * solid.bounceCoefficient * this.bounceCoefficient;
+            }
+            else if (this.minTranslationY !== 0 && Math.sign(this.minTranslationY) !== Math.sign(this.yVelocity)) {
+                this.yVelocity *= -1 * Math.abs(this.minTranslationY / magnitude) * solid.bounceCoefficient * this.bounceCoefficient;
+            }
         }
-        if (this.minTranslationY !== 0 && Math.sign(this.minTranslationY) !== Math.sign(this.yVelocity)) {
-            this.yVelocity *= -1 * Math.abs(this.minTranslationY / magnitude) * solid.bounceCoefficient * this.bounceCoefficient;
+        else {
+            // gotta do some fuckin axis rotation >_>
+
+            const angle = MathUtil.calculateTheta(this.minTranslationY, this.minTranslationX);
+            let polar = MathUtil.cartesianToPolar(this.xVelocity, this.yVelocity);
+            polar.theta += angle;
+            let transformed = MathUtil.polarToCartesian(polar.r, polar.theta);
+            transformed.x *= -1;
+            polar = MathUtil.cartesianToPolar(transformed.x, transformed.y);
+            polar.theta -= angle;
+            transformed = MathUtil.polarToCartesian(polar.r, polar.theta);
+
+            this.xVelocity = Math.abs(transformed.x) * Math.sign(this.minTranslationX) * this.bounceCoefficient * solid.bounceCoefficient;
+            this.yVelocity = Math.abs(transformed.y) * Math.sign(this.minTranslationY) * this.bounceCoefficient * solid.bounceCoefficient;
         }
     }
 

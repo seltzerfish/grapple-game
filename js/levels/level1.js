@@ -3,8 +3,8 @@ var LEVEL_1 = new Level(
     1000, // width
     1900, // height
     new ParallaxBackground(["bg1_1", "bg1_2", "bg1_3"], [0.05, 0.1, 0.15]), // background
-    640, // player start pos. X
-    740, // player start pos. Y
+    -1043, // player start pos. X
+    1200, // player start pos. Y
     0.25, // gravity constant
     [ // solids
         new PartialDeadlySolid(500, 800, 300, 100, false, true, false, false),
@@ -22,4 +22,70 @@ var LEVEL_1 = new Level(
         new Jupiter(85, 500),   
     ],
     [] // actors
+);
+
+var TEST_LEVEL = new Level(
+    1000, // width
+    1900, // height
+    new ParallaxBackground(["bg1_1", "bg1_2", "bg1_3"], [0.05, 0.1, 0.15]), // background
+    640, // player start pos. X
+    740, // player start pos. Y
+    0.25, // gravity constant
+    [ // solids
+        new PartialDeadlySolid(500, 800, 300, 100, false, true, false, false),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+        new Jupiter(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(2000)),
+    ],
+    [// actors
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(50)),
+        // new BouncyBall(MathUtil.getRandomInt(1000), MathUtil.getRandomInt(1000)),
+    ]
 );
