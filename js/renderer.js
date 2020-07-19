@@ -180,7 +180,7 @@ class Renderer {
                 else if (hitbox instanceof CircularHitbox) {
                     this.ctx.beginPath();
                     this.ctx.arc(this.camera.translateX(sprite.x + hitbox.xOffset),
-                    this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.radius, 0, 2 * Math.PI);
+                    this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.radius * this.camera.zoom, 0, 2 * Math.PI);
                     ctx.stroke();
                 }
             }
@@ -198,7 +198,7 @@ class Renderer {
                 else if (hitbox instanceof CircularHitbox) {
                     this.ctx.beginPath();
                     this.ctx.arc(this.camera.translateX(sprite.x + hitbox.xOffset),
-                    this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.radius, 0, 2 * Math.PI);
+                    this.camera.translateY(sprite.y + hitbox.yOffset), hitbox.radius * this.camera.zoom, 0, 2 * Math.PI);
                     ctx.stroke();
                 }
             }
@@ -210,7 +210,7 @@ class Renderer {
     drawGrappleLength() {
         this.ctx.strokeStyle = "green";
         this.ctx.beginPath();
-        this.ctx.arc(this.camera.translateX(this.level.player.getCenterX()), this.camera.translateY(this.level.player.getCenterY()), this.level.player.grappleLength - 60, 0, 2 * Math.PI);
+        this.ctx.arc(this.camera.translateX(this.level.player.getCenterX()), this.camera.translateY(this.level.player.getCenterY()), (this.level.player.grappleLength - 60) * this.camera.zoom, 0, 2 * Math.PI);
         this.ctx.stroke();
         this.ctx.strokeStyle = "black";
     }
