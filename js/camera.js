@@ -12,13 +12,11 @@ class Camera {
         this.zoomOffsetX = 0;
     }
 
-
     updatePosition() {
         const xDistance = this.anchor.getCenterX() - this.x;
         const yDistance = this.anchor.getCenterY() - this.y;
         this.moveTowardsAnchorLinearly(xDistance, yDistance);
     }
-
     
     moveTowardsAnchorLinearly(xDistance, yDistance) {
         this.x += Math.round(this.linearFollowStrength * xDistance);
@@ -56,5 +54,4 @@ class Camera {
     translateInputY(y) {
         return (this.y + (y- (canvas.height / 2)) / this.zoom);
     }
-
 }
