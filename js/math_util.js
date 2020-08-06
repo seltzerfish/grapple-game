@@ -7,7 +7,7 @@ class MathUtil {
         return Math.atan2(opposite, adjacent);
     }
 
-    static distanceBetween(x1, y1, x2, y2) {
+    static distanceBetween(x1, y1, x2=0, y2=0) {
         return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
     }
 
@@ -17,6 +17,21 @@ class MathUtil {
 
     static choose(array) {
         return array[Math.floor(Math.random()*array.length)];
+    }
+
+
+    static cartesianToPolar(x, y) {
+        return {
+            r: this.distanceBetween(x, y), 
+            theta: this.calculateTheta(y, x)
+        };
+    }
+
+    static polarToCartesian(r, theta) {
+        return {
+            x: r * Math.cos(theta),
+            y: r * Math.sin(theta)
+        };
     }
 
     /** 
