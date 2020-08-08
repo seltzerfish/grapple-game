@@ -1,5 +1,24 @@
+var LEVEL_1 = (function() {
+  "use strict"
 
-var LEVEL_1 = new Level(
+  // ideally would have a js compiler that could pull in json deps automatically.
+  // For now, this is a copy-paste from leveldev/parse_test.json
+  let level_json = {"solids": [{"x": 0, "y": 900, "width": 250, "height": 100}, {"x": 200, "y": 520, "width": 100, "height": 100}, {"x": 470, "y": 240, "width": 470, "height": 100}, {"x": 780, "y": 500, "width": 160, "height": 100}]}
+
+  let solids = level_json["solids"].map(obj => new Solid(obj.x, obj.y, obj.width, obj.height))
+  return new Level(
+      1000, // width
+      1900, // height
+      new ParallaxBackground(["bg1_1", "bg1_2", "bg1_3"], [0.05, 0.1, 0.15]), // background
+      27, // player start pos. X
+      848, // player start pos. Y
+      0.25, // gravity constant
+      solids, // solids
+      [] // actors
+  )
+})()
+
+var old_LEVEL_1 = new Level(
     1000, // width
     1900, // height
     new ParallaxBackground(["bg1_1", "bg1_2", "bg1_3"], [0.05, 0.1, 0.15]), // background
@@ -23,3 +42,4 @@ var LEVEL_1 = new Level(
     ],
     [] // actors
 );
+
