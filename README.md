@@ -17,3 +17,8 @@ Disable adblock and run in Google Chrome. Browser compatibility is limited right
 ## Adding new sounds
 When adding new sounds, you must run `./build_spritesheets.sh` before you will be able to access them in `sound_util.js`.
 Note that this script requires [audiosprite](https://github.com/tonistiigi/audiosprite) to run.
+
+## Adding new levels
+Use Inkscape to place rectangles and circles in an SVG file (there are some SVGs in `leveldev/` for reference). For rectangles, specific colors correspond to different types of Solid. Compile your SVG to JSON via `parse_svg.py <my_file>.svg`. This creates `<my_file>.json`.
+
+The parsing is very limited: Make sure you don't use any of the rotate functionality in Inkscape (SVG `translate()`s are ignored by the parser). Also, only shapes from the layer with id `layer1` will be considered.
