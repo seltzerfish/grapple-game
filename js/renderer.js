@@ -7,6 +7,7 @@ class Renderer {
         this.level = level;
         this.camera = camera;
         this.accelerationGraph = [];
+        this.paused = false;
     }
 
     render() {
@@ -17,6 +18,12 @@ class Renderer {
         if (DEBUG) {
             this.renderDebugInfo(this.ctx)
         }
+        if (this.paused) {
+            this.displayPaused();
+        }
+    }
+    togglePause() {
+        this.paused = !this.paused;
     }
 
     clearCanvas() {
@@ -139,6 +146,14 @@ class Renderer {
         for (let i = 0; i < this.level.actors.length; i++) {
             this.renderSprite(this.level.actors[i]);
         }
+    }
+
+    displayPaused() {
+        ctx.save();
+        ctx.font = "100px JetBrains Mono";
+        ctx.fillStyle = "white";
+        ctx.fillText("Paused", canvas.width / 2 - 200, canvas.height / 2); 
+        ctx.restore();
     }
 
 

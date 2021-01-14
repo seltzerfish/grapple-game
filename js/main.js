@@ -23,6 +23,7 @@ class Game {
     window.addEventListener('keydown', (event) => {
       if (event.key === "Escape") {
         this.togglePause();
+        this.renderer.togglePause();
       }
       else {
         this.controller.handleKeyDown(event)
@@ -65,8 +66,8 @@ window.onload = function init() {
 function loop() {
   if (!game.paused) {
     game.level.update();
-    game.renderer.render();
-    game.hud.maybeUpdate();
   }
+  game.renderer.render();
+  game.hud.maybeUpdate();
   window.requestAnimationFrame(loop);
 }
