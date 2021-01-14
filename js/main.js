@@ -8,6 +8,7 @@ var game;
 
 class Game {
   constructor() {
+    this.paused = false;
     this.controller = new Controller();
     this.player = new Player(this.controller);
     this.camera = new Camera(this.player);
@@ -19,7 +20,15 @@ class Game {
     window.addEventListener('mousedown', (event) => this.controller.handleMouseDown(event));
     window.addEventListener('mouseup', (event) => this.controller.handleMouseUp(event));
     window.addEventListener('mousemove', (event) => this.controller.updateMousePos(event));
-    window.addEventListener('keydown', (event) => this.controller.handleKeyDown(event));
+    window.addEventListener('keydown', (event) => {
+      if (event.key === "Escape") {
+        this.togglePause();
+      }
+      else {
+        this.controller.handleKeyDown(event)
+      }
+    }
+    );
     window.addEventListener('keyup', (event) => this.controller.handleKeyUp(event));
     window.addEventListener('contextmenu', (event) => this.controller.preventRightClickMenu(event));
   }
@@ -32,6 +41,11 @@ class Game {
     this.player.x = this.level.playerStartX;
     this.player.y = this.level.playerStartY;
     this.level.actors.push(this.player);
+  }
+
+  togglePause() {
+    SFX.pause(); //TODO: fix/refine this. doesn't resume paused sounds.
+    this.paused = !this.paused;
   }
 }
 
@@ -49,8 +63,10 @@ window.onload = function init() {
 }
 
 function loop() {
-  game.level.update();
-  game.renderer.render();
-  game.hud.maybeUpdate();
+  if (!game.paused) {
+    game.level.update();
+    game.renderer.render();
+    game.hud.maybeUpdate();
+  }
   window.requestAnimationFrame(loop);
 }
