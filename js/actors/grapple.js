@@ -26,7 +26,7 @@ class Grapple extends Actor {
     }
 
     act(level) {
-        if (!this.player.controller.leftClickDown && (this.state === GrappleState.EXTENDING || this.state === GrappleState.ATTACHED)) {
+        if (!this.player.controller.leftClickDown && !this.player.controller.zDown && (this.state === GrappleState.EXTENDING || this.state === GrappleState.ATTACHED)) {
             this.return();
         } else if (this.state === GrappleState.RETURNING) {
             this.returnToPlayer();

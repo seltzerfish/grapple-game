@@ -15,6 +15,8 @@ class Controller {
             y: 0
         };
         this.tabDown = false;
+        this.zDown = false;
+        this.xDown = false;
         const img = document.getElementById("crosshair");
         this.cursorOffsetX = Math.round(img.width / 2);
         this.cursorOffsetY = Math.round(img.height / 2);
@@ -56,11 +58,29 @@ class Controller {
             event.preventDefault();
             this.tabDown = true;
         }
+        if (event.which === 90) {
+            event.preventDefault();
+            this.zDown = true;
+            this.leftClickDownX = this.mouse.x;
+            this.leftClickDownY = this.mouse.y;
+        }
+        if (event.which === 88) {
+            event.preventDefault();
+            this.xDown = true;
+            this.rightClickDownX = this.mouse.x;
+            this.rightClickDownY = this.mouse.y;
+        }
     }
 
     handleKeyUp(event) {
         if (event.which === 9) {
             this.tabDown = false;
+        }
+        if (event.which === 90) {
+            this.zDown = false;
+        }
+        if (event.which === 88) {
+            this.xDown = false;
         }
     }
 

@@ -50,14 +50,14 @@ class Player extends Actor {
 
     handleControllerInput(level) {
         if (!this.grapple) {
-            if (this.controller.leftClickDown) {
+            if (this.controller.leftClickDown || this.controller.zDown) {
                 this.createGrapple(level);
             }
         }
-        if (this.controller.rightClickDown && this.rightClickReleased) {
+        if ((this.controller.rightClickDown || this.controller.xDown) && this.rightClickReleased) {
             this.tryToThrust(level);
         }
-        else if (!this.rightClickReleased && !this.controller.rightClickDown) {
+        else if (!this.rightClickReleased && !this.controller.rightClickDown && !this.controller.xDown) {
             this.rightClickReleased = true;
         }
     }

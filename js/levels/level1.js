@@ -17,8 +17,8 @@ var LEVEL_1 = (function() {
     }
   })
   return new Level(
-      9715, // width
-      3128, // height
+      3000, // width
+      1500, // height
       new ParallaxBackground(["bg1_1", "bg1_2", "bg1_3"], [0.05, 0.1, 0.15]), // background
       777, // player start pos. X
       848, // player start pos. Y
